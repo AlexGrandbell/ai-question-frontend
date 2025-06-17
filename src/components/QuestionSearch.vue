@@ -22,7 +22,15 @@
             placeholder="输入关键字搜索题干"
             @keyup.enter="onSearch"
           />
+          <img
+            src="@/assets/icons/cross.svg"
+            class="clear-icon"
+            v-if="localFilter.keyword"
+            @click="localFilter.keyword = ''"
+            alt="clear"
+          />
         </div>
+        <button class="rst-btn" @click="onReset">重置</button>
         <button class="search-btn" @click="onSearch">搜索</button>
         <img
           class="filter-toggle-icon"
@@ -76,6 +84,13 @@
               placeholder="例如 Java"
               class="text-input"
             />
+            <img
+              src="@/assets/icons/cross.svg"
+              class="clear-icon"
+              v-if="localFilter.language"
+              @click="localFilter.language = ''"
+              alt="clear"
+            />
           </div>
         </div>
       </div>
@@ -92,7 +107,7 @@ export default {
         type: '',
         keyword: '',
         difficulty: '',
-        sortBy: '',
+        sortBy: 'createdAt',
         direction: 'ASC',
         language: ''
       },
@@ -124,7 +139,19 @@ export default {
       const newFilter = { ...this.localFilter };
       this.$emit('update:filter', newFilter);
       this.$emit('search')
-    }
+    },
+    onReset() {
+      this.localFilter = {
+        type: '',
+        keyword: '',
+        difficulty: '',
+        sortBy: 'createdAt',
+        direction: 'ASC',
+        language: ''
+      };
+      this.$emit('update:filter', { ...this.localFilter });
+      this.$emit('search');
+      }
   }
 }
 </script>
@@ -176,6 +203,17 @@ export default {
   transition: transform 0.2s ease;
 }
 
+.rst-btn{
+  background-color: #c8c8c8;
+  font-size: 14px;
+  color: white;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
 .filter-toggle-icon {
   width: 35px;
   height: 35px;
@@ -184,12 +222,14 @@ export default {
 }
 
 .search-btn:hover,
-.filter-toggle-icon:hover {
+.filter-toggle-icon:hover,
+.rst-btn:hover {
   transform: scale(1.1);
 }
 
 .search-btn:active,
-.filter-toggle-icon:active{
+.filter-toggle-icon:active,
+.rst-btn:active {
   transform: scale(0.95);
 }
 
@@ -310,4 +350,23 @@ img {
   overflow: hidden;
   padding: 16px;
 }
+.clear-icon {
+  width: 30px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.clear-icon:hover {
+  transform: scale(1.2);
+}
+
+.clear-icon:active {
+  transform: scale(0.95);
+}
+
 </style>
+
