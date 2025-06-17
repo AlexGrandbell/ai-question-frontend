@@ -127,7 +127,7 @@ export default {
   background-color: white;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
 }
 
 .top-row {
@@ -162,7 +162,7 @@ export default {
   color: white;
   border: none;
   padding: 6px 20px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -280,5 +280,9 @@ export default {
   opacity: 1;
   max-height: 500px;
 }
-
+img {
+  pointer-events: auto;
+  user-drag: none;
+  -webkit-user-drag: none;
+}
 </style>

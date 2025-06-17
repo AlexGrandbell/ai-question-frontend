@@ -13,7 +13,8 @@
         :disabled="!hasSelection"
         @click="handleBatchDelete"
       >
-        批量删除
+        <img src="@/assets/icons/trash.svg" alt="trash" />
+        <apan>批量删除</apan>
       </button>
     </div>
 
@@ -85,6 +86,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  user-select: none;
 }
 
 .action-bar {
@@ -95,15 +97,30 @@ export default {
 }
 
 .danger-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e74c3c;
   background-color: #e74c3c;
   color: white;
   border: none;
-  padding: 8px 14px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
 }
 .danger-button:disabled {
   background-color: #ccc;
+  border: 1px solid #b8b8b8;
   cursor: not-allowed;
+}
+.danger-button img {
+  width: 16px;
+  height: 16px;
+}
+img {
+  pointer-events: auto;
+  user-drag: none;
+  -webkit-user-drag: none;
 }
 </style>

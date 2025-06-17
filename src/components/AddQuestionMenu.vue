@@ -57,7 +57,7 @@ export default {
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  border: 1px solid #2196f3;
+  border:none;
   background: #2196f3;
   color: white;
   border-radius: 6px;
@@ -66,7 +66,7 @@ export default {
   transition: transform 0.2s ease;
 }
 .main-button:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 .main-button:active {
   transform: scale(0.95);
@@ -133,5 +133,10 @@ export default {
 .fade-scale-leave-from {
   opacity: 1;
   transform: scale(1);
+}
+img {
+  pointer-events: auto;
+  user-drag: none;
+  -webkit-user-drag: none;
 }
 </style>
