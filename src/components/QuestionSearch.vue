@@ -99,9 +99,9 @@ export default {
       expanded: false,
       typeOptions: [
         { label: '全部', value: '' },
-        { label: '单选', value: 'SINGLE' },
-        { label: '多选', value: 'MULTIPLE' },
-        { label: '判断', value: 'TRUE_FALSE' }
+        { label: '单选', value: 'SINGLE_CHOICE' },
+        { label: '多选', value: 'MULTIPLE_CHOICE' },
+        { label: '编程', value: 'PROGRAMMING' }
       ],
       difficultyOptions: [
         { label: '全部', value: '' },
@@ -121,7 +121,9 @@ export default {
       this.localFilter.type = value
     },
     onSearch() {
-      this.$emit('search', { ...this.localFilter })
+      const newFilter = { ...this.localFilter };
+      this.$emit('update:filter', newFilter);
+      this.$emit('search')
     }
   }
 }

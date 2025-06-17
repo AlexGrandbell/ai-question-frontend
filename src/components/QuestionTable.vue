@@ -41,6 +41,11 @@
           </td>
         </tr>
         </tbody>
+        <tbody v-if="questions.length === 0">
+        <tr>
+          <td colspan="5" class="empty-row">暂无数据</td>
+        </tr>
+        </tbody>
       </table>
     </div>
     <div class="pagination-bar">
@@ -334,5 +339,12 @@ td.left {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.empty-row {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-size: 16px;
 }
 </style>

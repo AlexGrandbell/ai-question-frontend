@@ -94,7 +94,12 @@ export default {
           params: {
             page: this.filter.page,
             size: this.filter.size,
-            direction: 'ASC'
+            direction: this.filter.direction,
+            sortBy: this.filter.sortBy,
+            type: this.filter.type,
+            keyword: this.filter.keyword,
+            language: this.filter.language,
+            difficulty: this.filter.difficulty
           }
         })
         this.questions = res.data.content
