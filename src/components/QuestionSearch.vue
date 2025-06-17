@@ -126,6 +126,7 @@ export default {
 .question-search {
   background-color: white;
   border-radius: 8px;
+  box-shadow: 0 1px 10px rgb(0 0 0 / 0.1);
   padding: 16px;
 
 }

@@ -81,7 +81,7 @@ export default {
   transition: background-color 0.2s;
 }
 .menu-item:hover {
-  background-color: #2196f3;
+  background-color: rgba(91, 177, 246, 0.3);
 }
 .menu-item.active {
   background-color: #2196f3;

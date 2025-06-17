@@ -1,17 +1,17 @@
 <template>
   <div class="question-manager">
     <QuestionSearch
-      :filter="filter"
-      @update:filter="handleFilterUpdate"
-      @search="handleSearch"
+        :filter="filter"
+        @update:filter="handleFilterUpdate"
+        @search="handleSearch"
     />
 
     <div class="action-bar">
       <AddQuestionMenu @select="handleAddQuestion" />
       <button
-        class="danger-button"
-        :disabled="!hasSelection"
-        @click="handleBatchDelete"
+          class="danger-button"
+          :disabled="!hasSelection"
+          @click="handleBatchDelete"
       >
         <img src="@/assets/icons/trash.svg" alt="trash" />
         <apan>批量删除</apan>
@@ -19,10 +19,10 @@
     </div>
 
     <QuestionTable
-      :questions="questions"
-      :selected="selectedIds"
-      @update:selected="selectedIds = $event"
-      @refresh="handleSearch"
+        :questions="questions"
+        :selected="selectedIds"
+        @update:selected="selectedIds = $event"
+        @refresh="handleSearch"
     />
   </div>
 </template>
@@ -31,6 +31,7 @@
 import QuestionSearch from "@/components/QuestionSearch.vue";
 import QuestionTable from '@/components/QuestionTable.vue'
 import AddQuestionMenu from '@/components/AddQuestionMenu.vue'
+import axios from "axios";
 
 export default {
   name: 'QuestionManagerView',
@@ -64,11 +65,42 @@ export default {
     handleFilterUpdate(newFilter) {
       this.filter = { ...this.filter, ...newFilter }
     },
-    handleSearch() {
-      // TODO: fetch question list from API using this.filter
+    async handleSearch() {
+      try {
+        const res = await axios.get('/api/questions', {
+          params: {
+            page: 0,
+            size: 10,
+            direction: 'ASC'
+          }
+        })
+        this.questions = res.data.content
+      } catch (e) {
+        console.error('加载题目失败', e)
+      }
     },
-    handleBatchDelete() {
-      // TODO: call API to delete selected questions
+    async handleBatchDelete() {
+      if (this.selectedIds.length === 0) return;
+
+      if (!confirm(`确定删除选中的 ${this.selectedIds.length} 条题目吗？`)) {
+        return;
+      }
+
+      try {
+        const res = await axios.post('/api/questions/batch-delete', {
+          ids: this.selectedIds
+        });
+        if (res.data.success) {
+          this.selectedIds = [];
+          this.handleSearch();
+          alert(res.data.message || '删除成功');
+        } else {
+          alert(res.data.message || '删除失败');
+        }
+      } catch (error) {
+        console.error('删除请求失败:', error);
+        alert('删除失败，请稍后重试');
+      }
     },
     // handleAddQuestion(type) {
     handleAddQuestion() {
@@ -100,7 +132,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #e74c3c;
   background-color: #e74c3c;
   color: white;
   border: none;
@@ -108,11 +139,17 @@ export default {
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .danger-button:disabled {
   background-color: #ccc;
-  border: 1px solid #b8b8b8;
   cursor: not-allowed;
+}
+.danger-button:not(:disabled):hover{
+  transform: scale(1.1);
+}
+.danger-button:not(:disabled):active{
+  transform: scale(0.95);
 }
 .danger-button img {
   width: 16px;
