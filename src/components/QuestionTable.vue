@@ -182,6 +182,10 @@ export default {
       const range = 2
       const pages = []
 
+      if (total <= 3) {
+        return Array.from({ length: total }, (_, i) => i)
+      }
+
       const start = Math.max(1, current - range)
       const end = Math.min(total - 2, current + range)
 
@@ -199,7 +203,7 @@ export default {
 .question-table {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 400px);
+  height: calc(100vh - 250px);
   background: white;
   border-radius: 10px;
   box-shadow: 0 1px 10px rgb(0 0 0 / 0.1);
@@ -211,7 +215,7 @@ export default {
 }
 
 .table-scroll {
-  overflow-y: auto;
+  overflow-y: scroll;
   flex: 1 1 auto;
 }
 

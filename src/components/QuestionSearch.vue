@@ -34,44 +34,49 @@
     </div>
 
     <transition name="fade">
-      <div v-show="expanded" class="more-filters">
-        <div class="filter-line">
-          <span class="label">难度：</span>
-          <div class="button-group rounded-group">
-            <button v-for="d in difficultyOptions" :key="d.value"
-              :class="['group-button', { active: localFilter.difficulty === d.value }]"
-              @click="localFilter.difficulty = d.value">{{ d.label }}</button>
+      <div
+          v-show="expanded"
+          class="more-filters-container"
+      >
+        <div class="more-filters">
+          <div class="filter-line">
+            <span class="label">难度：</span>
+            <div class="button-group rounded-group">
+              <button v-for="d in difficultyOptions" :key="d.value"
+                :class="['group-button', { active: localFilter.difficulty === d.value }]"
+                @click="localFilter.difficulty = d.value">{{ d.label }}</button>
+            </div>
           </div>
-        </div>
-        <div class="filter-line">
-          <span class="label">排序依据：</span>
-          <div class="button-group rounded-group">
-            <button v-for="s in sortFields" :key="s.value"
-              :class="['group-button', { active: localFilter.sortBy === s.value }]"
-              @click="localFilter.sortBy = s.value">{{ s.label }}</button>
+          <div class="filter-line">
+            <span class="label">排序依据：</span>
+            <div class="button-group rounded-group">
+              <button v-for="s in sortFields" :key="s.value"
+                :class="['group-button', { active: localFilter.sortBy === s.value }]"
+                @click="localFilter.sortBy = s.value">{{ s.label }}</button>
+            </div>
           </div>
-        </div>
-        <div class="filter-line">
-          <span class="label">排序顺序：</span>
-          <div class="button-group rounded-group">
-            <button
-              :class="['group-button', { active: localFilter.direction === 'ASC' }]"
-              @click="localFilter.direction = 'ASC'"
-            >升序</button>
-            <button
-              :class="['group-button', { active: localFilter.direction === 'DESC' }]"
-              @click="localFilter.direction = 'DESC'"
-            >降序</button>
+          <div class="filter-line">
+            <span class="label">排序顺序：</span>
+            <div class="button-group rounded-group">
+              <button
+                :class="['group-button', { active: localFilter.direction === 'ASC' }]"
+                @click="localFilter.direction = 'ASC'"
+              >升序</button>
+              <button
+                :class="['group-button', { active: localFilter.direction === 'DESC' }]"
+                @click="localFilter.direction = 'DESC'"
+              >降序</button>
+            </div>
           </div>
-        </div>
-        <div class="filter-line">
-          <span class="label">考点语言：</span>
-          <input
-            type="text"
-            v-model="localFilter.language"
-            placeholder="例如 Java"
-            class="text-input"
-          />
+          <div class="filter-line">
+            <span class="label">考点语言：</span>
+            <input
+              type="text"
+              v-model="localFilter.language"
+              placeholder="例如 Java"
+              class="text-input"
+            />
+          </div>
         </div>
       </div>
     </transition>
@@ -124,8 +129,9 @@ export default {
 
 <style scoped>
 .question-search {
+  position: relative;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 1px 10px rgb(0 0 0 / 0.1);
   padding: 16px;
 }
@@ -135,6 +141,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  min-height: 45px;
 }
 
 .type-section {
@@ -285,5 +292,20 @@ img {
   pointer-events: auto;
   user-drag: none;
   -webkit-user-drag: none;
+}
+.more-filters-container {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  right: 0;
+  background: white;
+  margin-top: 5px;
+  border-radius:  10px;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.31);
+  z-index: 10;
+  overflow: hidden;
+  padding: 16px;
 }
 </style>
