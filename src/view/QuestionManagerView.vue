@@ -26,7 +26,15 @@
         @change-page="handlePageChange"
         @change-size="handlePageSizeChange"
         @delete-one="handleSingleDelete"
+        @show-detail="handleShowDetail"
     />
+    <transition name="fade-dialog">
+      <QuestionDetailDialog
+          v-if="showDialog"
+          :question="currentQuestion"
+          @close="showDialog = false"
+      />
+    </transition>
   </div>
 </template>
 
@@ -34,6 +42,7 @@
 import QuestionSearch from "@/components/QuestionSearch.vue";
 import QuestionTable from '@/components/QuestionTable.vue'
 import AddQuestionMenu from '@/components/AddQuestionMenu.vue'
+import QuestionDetailDialog from '@/components/QuestionDetailDialog.vue'
 import axios from "axios";
 
 export default {
@@ -41,7 +50,8 @@ export default {
   components: {
     QuestionSearch,
     QuestionTable,
-    AddQuestionMenu
+    AddQuestionMenu,
+    QuestionDetailDialog
   },
   data() {
     return {
@@ -64,7 +74,9 @@ export default {
         totalPages: 0,
         first: true,
         last: true
-      }
+      },
+      showDialog: false,
+      currentQuestion: null
     }
   },
   computed: {
@@ -96,6 +108,20 @@ export default {
         }
       } catch (e) {
         console.error('加载题目失败', e)
+      }
+    },
+    async handleShowDetail(id) {
+      try {
+        const res = await axios.get(`/api/questions/${id}`)
+        if (res.data.success) {
+          this.currentQuestion = res.data.data
+          this.showDialog = true
+        } else {
+          alert(res.data.message || '获取题目详情失败')
+        }
+      } catch (e) {
+        console.error('获取题目详情失败', e)
+        alert('获取题目失败')
       }
     },
     async handlePageChange(page) {
@@ -205,5 +231,18 @@ img {
   pointer-events: auto;
   user-drag: none;
   -webkit-user-drag: none;
+}
+
+.fade-dialog-enter-active,
+.fade-dialog-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.fade-dialog-enter-from,
+.fade-dialog-leave-to {
+  opacity: 0;
+}
+.fade-dialog-enter-to,
+.fade-dialog-leave-from {
+  opacity: 1;
 }
 </style>

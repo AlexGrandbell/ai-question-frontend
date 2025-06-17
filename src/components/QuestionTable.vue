@@ -143,7 +143,7 @@ export default {
       }
     },
     showDetail(q) {
-      alert(`题目详情：${q.content}`)
+      this.$emit('show-detail', q.id)
     },
     isChecked(id) {
       return this.selected.includes(id)
@@ -245,7 +245,7 @@ td.left {
 }
 
 .table-head {
-  background-color: #f9f9f9;
+  background-color: #f6f6f6;
   font-weight: bold;
 }
 
