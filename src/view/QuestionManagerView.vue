@@ -21,8 +21,10 @@
     <QuestionTable
         :questions="questions"
         :selected="selectedIds"
+        :page-info="pageInfo"
         @update:selected="selectedIds = $event"
-        @refresh="handleSearch"
+        @change-page="handlePageChange"
+        @change-size="handlePageSizeChange"
         @delete-one="handleSingleDelete"
     />
   </div>
@@ -54,7 +56,15 @@ export default {
         direction: 'ASC'
       },
       questions: [],
-      selectedIds: []
+      selectedIds: [],
+      pageInfo: {
+        number: 0,
+        size: 10,
+        totalElements: 0,
+        totalPages: 0,
+        first: true,
+        last: true
+      }
     }
   },
   computed: {
@@ -70,15 +80,32 @@ export default {
       try {
         const res = await axios.get('/api/questions', {
           params: {
-            page: 0,
-            size: 10,
+            page: this.filter.page,
+            size: this.filter.size,
             direction: 'ASC'
           }
         })
         this.questions = res.data.content
+        this.pageInfo = {
+          ...res.data,
+          number: res.data.number,
+          size: res.data.size,
+          totalPages: res.data.totalPages,
+          first: res.data.first,
+          last: res.data.last
+        }
       } catch (e) {
         console.error('加载题目失败', e)
       }
+    },
+    async handlePageChange(page) {
+      this.filter.page = page
+      await this.handleSearch()
+    },
+    async handlePageSizeChange(size) {
+      this.filter.size = size
+      this.filter.page = 0
+      await this.handleSearch()
     },
     async handleBatchDelete() {
       if (this.selectedIds.length === 0) return;

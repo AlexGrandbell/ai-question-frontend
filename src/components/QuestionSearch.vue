@@ -128,7 +128,6 @@ export default {
   border-radius: 8px;
   box-shadow: 0 1px 10px rgb(0 0 0 / 0.1);
   padding: 16px;
-
 }
 
 .top-row {
@@ -238,6 +237,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+  outline: none;
   width: 200px;
 }
 
