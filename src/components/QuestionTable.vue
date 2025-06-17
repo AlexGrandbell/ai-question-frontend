@@ -32,7 +32,7 @@
         <td>小明</td>
         <td>
           <button class="edit-btn">编辑</button>
-          <button class="delete-btn">删除</button>
+          <button class="delete-btn" @click="$emit('delete-one', q.id)">删除</button>
         </td>
       </tr>
       </tbody>
@@ -85,9 +85,6 @@ export default {
       return this.questions.length > 0 && this.selected.length === this.questions.length
     }
   }
-  // mounted() {
-  //   this.loadData()
-  // }
 }
 </script>
 

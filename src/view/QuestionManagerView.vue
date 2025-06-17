@@ -23,6 +23,7 @@
         :selected="selectedIds"
         @update:selected="selectedIds = $event"
         @refresh="handleSearch"
+        @delete-one="handleSingleDelete"
     />
   </div>
 </template>
@@ -99,6 +100,24 @@ export default {
         }
       } catch (error) {
         console.error('删除请求失败:', error);
+        alert('删除失败，请稍后重试');
+      }
+    },
+    async handleSingleDelete(id) {
+      if (!confirm('确定删除这道题目吗？')) return;
+      try {
+        const res = await axios.post('/api/questions/batch-delete', {
+          ids: [id]
+        });
+        if (res.data.success) {
+          this.selectedIds = this.selectedIds.filter(i => i !== id);
+          this.handleSearch();
+          alert('删除成功');
+        } else {
+          alert('删除失败');
+        }
+      } catch (e) {
+        console.error('单题删除失败', e);
         alert('删除失败，请稍后重试');
       }
     },
