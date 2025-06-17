@@ -2,7 +2,7 @@
   <div class="app-container">
     <AppNavbar />
         <div class="main-body">
-          <AppSidebar :collapsed="sidebarCollapsed" @toggle="sidebarCollapsed = !sidebarCollapsed" @selectView="currentView = $event" />
+          <AppSidebar :collapsed="sidebarCollapsed" :current="currentView" @toggle="sidebarCollapsed = !sidebarCollapsed" @selectView="currentView = $event" />
           <div class="content-area" :class="{ collapsed: sidebarCollapsed }">
             <component :is="currentViewComponent" />
           </div>

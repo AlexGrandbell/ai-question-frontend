@@ -55,7 +55,7 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 250px;
+  width: 230px;
   background-color: #34495e;
   color: white;
   display: flex;
@@ -64,7 +64,7 @@ export default {
   user-select: none;
 }
 .sidebar.collapsed {
-  width: 60px;
+  width: 85px;
 }
 .menu-items {
   flex: 1;
@@ -75,20 +75,21 @@ export default {
   display: flex;
   align-items: center;
   cursor: pointer;
-  gap: 30px;
+  gap: 20px;
+  border-radius: 10px;
+  margin: 10px;
   transition: background-color 0.2s;
 }
 .menu-item:hover {
-  background-color: #3e5871;
+  background-color: #2196f3;
 }
 .menu-item.active {
-  background-color: #1abc9c;
+  background-color: #2196f3;
 }
 .icon {
   width: 25px;
   height: 25px;
   margin-right: 10px;
-  filter: invert(100%);
 }
 .collapse-toggle {
   padding: 10px;
@@ -99,7 +100,6 @@ export default {
 .toggle-icon {
   width: 30px;
   height: 30px;
-  filter: invert(100%);
 }
 .menu-label {
   opacity: 0;
