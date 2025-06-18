@@ -1,0 +1,29 @@
+.tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ccc;
+    padding: 3px;
+    border-radius: 8px;
+    width: 100%;
+}
+.tag-input-container .tag {
+    background-color: #f0f0f0;
+    font-size: 10px;
+    border-radius: 5px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+}
+.tag-input-container .remove-tag {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.tag-input-container .tag-input {
+    flex: 1;
+    min-width: 120px;
+    border: none;
+    outline: none;
+}

@@ -16,8 +16,20 @@
             <option value="PROGRAMMING">编程题</option>
           </select>
 
-          <label>语言:</label>
-          <input class="input-add" type="text" v-model="form.language" placeholder="例如 Java" />
+          <label>考点:</label>
+          <div class="tag-input-container">
+            <div class="tag" v-for="(tag, index) in languageTags" :key="index">
+              {{ tag }}
+              <span class="remove-tag" @click="removeTag(index)">×</span>
+            </div>
+            <input v-if="languageTags.length < 5"
+              class="input-tag tag-input"
+              type="text"
+              v-model="newTag"
+              @keyup.enter="addTag"
+                   :placeholder="`剩余 ${5 - languageTags.length} 个，回车添加`"
+            />
+          </div>
 
           <label>难度:</label>
           <select v-model="form.difficulty">
@@ -92,6 +104,7 @@
 import axios from "axios";
 import './DialogCSS.css';
 import './EditCSS.css';
+import './TagCSS.css';
 export default {
   name: 'QuestionSelfAddDialog',
   data() {
@@ -102,8 +115,9 @@ export default {
         options: { A: '', B: '', C: '', D: '' },
         answer: [],
         difficulty: 'EASY',
-        language: ''
-      }
+      },
+      languageTags: [],
+      newTag: '',
     }
   },
   computed: {
@@ -112,6 +126,38 @@ export default {
     }
   },
   methods: {
+    addTag() {
+      const tag = this.newTag.trim();
+      if (!tag) {
+        this.newTag = '';
+        return;
+      }
+      if (tag.includes(',')) {
+        this.$emit('info', '不能包含英文逗号', 'warning');
+        this.newTag = '';
+        return;
+      }
+      if (tag.length > 10) {
+        this.$emit('info', '每个标签最多 10 个字符', 'warning');
+        this.newTag = '';
+        return;
+      }
+      if (this.languageTags.includes(tag)) {
+        this.$emit('info', '标签已存在', 'warning');
+        this.newTag = '';
+        return;
+      }
+      if (this.languageTags.length >= 5) {
+        this.$emit('info', '最多添加 5 个考点标签', 'warning');
+        this.newTag = '';
+        return;
+      }
+      this.languageTags.push(tag);
+      this.newTag = '';
+    },
+    removeTag(index) {
+      this.languageTags.splice(index, 1);
+    },
     async submit() {
       if (!this.form.type || !this.form.content.trim()) {
         this.$emit('info', '题型和标题不能为空','warning')
@@ -130,7 +176,7 @@ export default {
         type: this.form.type,
         content: this.form.content,
         difficulty: this.form.difficulty,
-        language: this.form.language
+        language: this.languageTags.join(',')
       }
 
       if (this.isChoiceType) {

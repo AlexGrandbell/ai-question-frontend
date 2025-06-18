@@ -63,6 +63,11 @@ export default {
   transition: width 0.2s;
   user-select: none;
 }
+img {
+  pointer-events: auto;
+  user-drag: none;
+  -webkit-user-drag: none;
+}
 .sidebar.collapsed {
   width: 85px;
 }

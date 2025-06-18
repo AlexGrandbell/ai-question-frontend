@@ -32,7 +32,15 @@
         <p><strong>难度：</strong>
           <span :class="['difficulty-tag', difficultyClass]">{{ difficultyLabel }}</span>
         </p>
-        <p><strong>考点语言：</strong>{{ question.language }}</p>
+        <p><strong>考点：</strong>
+          <span
+            v-for="(tag, idx) in question.language.split(',').map(s => s.trim()).filter(Boolean)"
+            :key="idx"
+            class="lang-tag"
+          >
+            {{ tag }}
+          </span>
+        </p>
         <p><strong>创建时间：</strong>{{ formattedTime }}</p>
       </div>
     </div>
@@ -174,5 +182,16 @@ export default {
   color: white;
   border-radius: 6px;
   font-size: 13px;
+}
+
+.lang-tag {
+  display: inline-block;
+  background-color: #eee;
+  color: #333;
+  padding: 2px 8px;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  border-radius: 5px;
+  font-size: 14px;
 }
 </style>

@@ -5,10 +5,18 @@
 .dialog-box {
     max-height: 80vh;
 }
+.input-tag{
+    width: 100%;
+    outline: none;
+    margin: 0;
+    padding: 2px;
+}
+
 .input-add{
     width: 100%;
     outline: none;
     margin: 0;
+    padding: 10px;
 }
 
 select {
@@ -88,3 +96,4 @@ textarea {
     justify-content: center;
     gap: 4px;
 }
+

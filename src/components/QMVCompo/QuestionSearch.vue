@@ -20,6 +20,7 @@
             type="text"
             v-model="localFilter.keyword"
             placeholder="输入关键字搜索题干, 按回车搜索"
+
             @keyup.enter="onSearch"
           />
           <img
@@ -77,18 +78,29 @@
             </div>
           </div>
           <div class="filter-line">
-            <span class="label">考点语言：</span>
-            <input
-              type="text"
-              v-model="localFilter.language"
-              placeholder="例如 Java"
-              class="text-input"
-            />
+            <span class="label">考点：</span>
+            <div class="tag-input-container">
+              <span
+                  class="tag"
+                  v-for="(tag, index) in languageTags"
+                  :key="tag"
+              >
+                {{ tag }}
+                <span class="remove-tag" @click="removeTag(index)">×</span>
+              </span>
+              <input
+                  type="text"
+                  class="input-tag tag-input"
+                  v-model="newTag"
+                  @keyup.enter="addTag"
+                  placeholder="例如 Java"
+              />
+            </div>
             <img
               src="../../assets/icons/cross.svg"
               class="clear-icon"
-              v-if="localFilter.language"
-              @click="localFilter.language = ''"
+              v-if="languageTags.length > 0"
+              @click="clearTags"
               alt="clear"
             />
           </div>
@@ -99,6 +111,7 @@
 </template>
 
 <script>
+import '../QuestionDialog/TagCSS.css';
 export default {
   name: 'QuestionSearch',
   data() {
@@ -112,23 +125,35 @@ export default {
         language: ''
       },
       expanded: false,
+      newTag: '',
       typeOptions: [
-        { label: '全部', value: '' },
-        { label: '单选', value: 'SINGLE_CHOICE' },
-        { label: '多选', value: 'MULTIPLE_CHOICE' },
-        { label: '编程', value: 'PROGRAMMING' }
+        {label: '全部', value: ''},
+        {label: '单选', value: 'SINGLE_CHOICE'},
+        {label: '多选', value: 'MULTIPLE_CHOICE'},
+        {label: '编程', value: 'PROGRAMMING'}
       ],
       difficultyOptions: [
-        { label: '全部', value: '' },
-        { label: '简单', value: 'EASY' },
-        { label: '中等', value: 'MEDIUM' },
-        { label: '困难', value: 'HARD' }
+        {label: '全部', value: ''},
+        {label: '简单', value: 'EASY'},
+        {label: '中等', value: 'MEDIUM'},
+        {label: '困难', value: 'HARD'}
       ],
       sortFields: [
-        { label: '创建时间', value: 'createdAt' },
-        { label: '难度', value: 'difficulty' },
-        { label: '题型', value: 'type' }
+        {label: '创建时间', value: 'createdAt'},
+        {label: '难度', value: 'difficulty'},
+        {label: '题型', value: 'type'}
       ]
+    }
+  },
+  computed: {
+    languageTags: {
+      get() {
+        if (!this.localFilter.language) return [];
+        return this.localFilter.language.split(',').filter(t => t.trim() !== '');
+      },
+      set(tags) {
+        this.localFilter.language = tags.join(',');
+      }
     }
   },
   methods: {
@@ -136,7 +161,7 @@ export default {
       this.localFilter.type = value
     },
     onSearch() {
-      const newFilter = { ...this.localFilter };
+      const newFilter = {...this.localFilter};
       this.$emit('update:filter', newFilter);
       this.$emit('search')
     },
@@ -149,10 +174,45 @@ export default {
         direction: 'ASC',
         language: ''
       };
-      this.$emit('info','已重置搜索条件', 'success')
-      this.$emit('update:filter', { ...this.localFilter });
+      this.newTag = '';
+      this.$emit('info', '已重置搜索条件', 'success')
+      this.$emit('update:filter', {...this.localFilter});
       this.$emit('search');
+    },
+    addTag() {
+      const tag = this.newTag.trim();
+      if (!tag) {
+        this.newTag = '';
+        return;
       }
+      if (this.languageTags.includes(tag)) {
+        this.$emit('info', '标签已存在', 'warning');
+        this.newTag = '';
+        return;
+      }
+      if (tag.includes(',')) {
+        this.$emit('info', '标签不能包含逗号', 'warning');
+        this.newTag = '';
+        return;
+      }
+      if (tag.length > 10) {
+        this.$emit('info', '每个标签最多10个字符', 'warning');
+        this.newTag = '';
+        return;
+      }
+      const updatedTags = [...this.languageTags, tag];
+      this.languageTags = updatedTags;
+      this.newTag = '';
+    },
+    removeTag(index) {
+      const updatedTags = [...this.languageTags];
+      updatedTags.splice(index, 1);
+      this.languageTags = updatedTags;
+    },
+    clearTags() {
+      this.languageTags = [];
+      this.newTag = '';
+    }
   }
 }
 </script>
@@ -297,7 +357,7 @@ export default {
   background: white;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 6px 10px;
+  padding: 0px 10px;
   flex-grow: 1;
 }
 
@@ -347,7 +407,7 @@ img {
   margin-top: 5px;
   border-radius:  10px;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.31);
-  z-index: 10;
+  z-index: 1;
   overflow: hidden;
   padding: 16px;
 }
@@ -370,4 +430,3 @@ img {
 }
 
 </style>
-
