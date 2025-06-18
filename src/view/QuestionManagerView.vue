@@ -60,6 +60,7 @@
           v-if="showAIGenerateDialog"
           @close="showAIGenerateDialog = false"
           @info="showToast"
+          @search="handleSearch"
       />
     </transition>
     <ToastMassage ref="toast" />

@@ -63,6 +63,7 @@
 
       <div class="page-buttons">
         <button
+            class="page-button"
             @click="$emit('change-page', pageInfo.number - 1)"
             :disabled="pageInfo.first"
         >
@@ -70,6 +71,7 @@
         </button>
 
         <button
+            class="page-button"
             v-if="visiblePages[0] > 0"
             :class="{ active: pageInfo.number === 0 }"
             @click="$emit('change-page', 0)"
@@ -80,6 +82,7 @@
         <span v-if="visiblePages[0] > 1">...</span>
 
         <button
+            class="page-button"
             v-for="i in visiblePages"
             :key="i"
             :class="{ active: i === pageInfo.number }"
@@ -91,6 +94,7 @@
         <span v-if="visiblePages[visiblePages.length - 1] < pageInfo.totalPages - 2">...</span>
 
         <button
+            class="page-button"
             v-if="visiblePages[visiblePages.length - 1] < pageInfo.totalPages - 1"
             :class="{ active: pageInfo.number === pageInfo.totalPages - 1 }"
             @click="$emit('change-page', pageInfo.totalPages - 1)"
@@ -99,6 +103,7 @@
         </button>
 
         <button
+            class="page-button"
             @click="$emit('change-page', pageInfo.number + 1)"
             :disabled="pageInfo.last"
         >
@@ -457,6 +462,10 @@ th.with-divider::after {
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: middle;
+}
+
+.page-button:not(:disabled):not(.active):hover{
+  background-color: #e0e0e0;
 }
 
 </style>

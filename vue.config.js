@@ -8,7 +8,12 @@ module.exports = defineConfig({
         target: 'http://localhost:10100',
         changeOrigin: true,
         pathRewrite: { '^/api': '/api' }
-      }
+      },
+      // '/chat': {
+      //   target: 'http://localhost:5110',
+      //   changeOrigin: true
+      //   pathRewrite: { '^/chat': '/chat' }
+      // }
     }
   }
 })

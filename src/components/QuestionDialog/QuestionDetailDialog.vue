@@ -4,11 +4,20 @@
       <div class="dialog-header">
         <h2 class="header-title">
           题目信息
-          <img
-            :src="copied ? require('@/assets/icons/check.svg') : require('@/assets/icons/copy.svg')"
-            class="copy-icon"
+          <button
+            class="icon-button copy-icon"
+            :style="{ backgroundImage: `url(${copied ? require('@/assets/icons/check.svg') : require('@/assets/icons/copy.svg')})` }"
             @click="copyQuestion"
-            alt="复制"
+            data-tooltip="复制为文本"
+            aria-label="复制为文本"
+          />
+          <button
+            class="icon-button copy-icon"
+            style="width: 30px;height: 30px"
+            :style="{ backgroundImage: `url(${copiedjson ? require('@/assets/icons/check.svg') : require('@/assets/icons/json.svg')})` }"
+            @click="copyQuestionJson"
+            data-tooltip="复制JSON格式"
+            aria-label="复制JSON格式"
           />
         </h2>
         <div class="close-button" @click="$emit('close')"></div>
@@ -56,7 +65,8 @@ export default {
   },
   data() {
     return {
-      copied: false
+      copied: false,
+      copiedjson: false
     }
   },
   computed: {
@@ -111,6 +121,29 @@ export default {
       navigator.clipboard.writeText(text).then(() => {
         this.copied = true
         setTimeout(() => (this.copied = false), 1500)
+      })
+    },
+    copyQuestionJson() {
+      const questionForCopy = { ...this.question }
+      delete questionForCopy.id
+      delete questionForCopy.createdAt
+      delete questionForCopy.userId
+      if (!questionForCopy.language) {
+        delete questionForCopy.language
+      }
+
+      if (typeof questionForCopy.options === 'string') {
+        try {
+          questionForCopy.options = JSON.parse(questionForCopy.options)
+        } catch {
+          // 保持原样
+        }
+      }
+
+      const json = JSON.stringify(questionForCopy, null, 2)
+      navigator.clipboard.writeText(json).then(() => {
+        this.copiedjson = true
+        setTimeout(() => (this.copiedjson = false), 1500)
       })
     }
   }
@@ -168,13 +201,6 @@ export default {
   -webkit-user-drag: none;
 }
 
-.copy-icon:hover {
-  transform: scale(1.2);
-}
-.copy-icon:active {
-  transform: scale(0.95);
-}
-
 .answer-tag {
   display: inline-block;
   padding: 2px 8px;
@@ -194,5 +220,54 @@ export default {
   margin-bottom: 3px;
   border-radius: 5px;
   font-size: 14px;
+}
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.icon-button {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.icon-button:hover {
+  transform: scale(1.2);
+}
+
+.icon-button:active {
+  transform: scale(0.95);
 }
 </style>

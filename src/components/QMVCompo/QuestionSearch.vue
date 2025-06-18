@@ -336,7 +336,7 @@ export default {
   border-color: #2196f3;
 }
 
-.group-button:hover {
+.group-button:not(.active):hover {
   background-color: #53b8ff;
   color: white;
   border-color: #53b8ff;

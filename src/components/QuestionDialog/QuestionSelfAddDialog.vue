@@ -95,7 +95,7 @@
       <!-- 底部按钮 -->
       <div class="dialog-footer">
         <button class="cancel" @click="$emit('close')">取消</button>
-        <button class="confirm" @click="submit">确认</button>
+        <button class="confirm" @click="submit">出题</button>
       </div>
     </div>
   </div>

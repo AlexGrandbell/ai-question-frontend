@@ -2,7 +2,7 @@
   <div class="dialog-overlay">
     <div class="dialog-box">
       <div class="dialog-header">
-        <h2 class="header-title">编辑题目</h2>
+        <h2 class="header-title">预览AI题目</h2>
         <div class="close-button" @click="$emit('close')"></div>
       </div>
 
@@ -79,7 +79,7 @@
 
       <div class="dialog-footer">
         <button class="cancel" @click="$emit('close')">取消</button>
-        <button class="confirm" @click="submit">修改</button>
+        <button class="confirm" @click="submit">出题</button>
       </div>
     </div>
   </div>
@@ -90,9 +90,10 @@ import axios from 'axios'
 import './DialogCSS.css'
 import './EditCSS.css';
 import './TagCSS.css'
+import {getUserInfo} from "@/utils/auth";
 
 export default {
-  name: 'QuestionEditDialog',
+  name: 'QuestionAIEditDialog',
   props: {
     question: Object
   },
@@ -125,10 +126,14 @@ export default {
         this.languageTags = q.language ? q.language.split(',').map(tag => tag.trim()).filter(tag => tag) : []
         this.form.difficulty = q.difficulty
         if (this.isChoiceType) {
-          try {
-            this.form.options = JSON.parse(q.options)
-          } catch {
-            this.form.options = { A: '', B: '', C: '', D: '' }
+          if (typeof q.options === 'string') {
+            try {
+              this.form.options = JSON.parse(q.options)
+            } catch {
+              this.form.options = { A: '', B: '', C: '', D: '' }
+            }
+          } else {
+            this.form.options = q.options || { A: '', B: '', C: '', D: '' }
           }
           this.form.answer = q.answer ? q.answer.split(',') : []
         }
@@ -141,8 +146,10 @@ export default {
         this.$emit('info', '标题不能为空', 'warning')
         return
       }
+      const user = getUserInfo();
 
       const payload = {
+        userId: user.id,
         type: this.form.type,
         content: this.form.content,
         difficulty: this.form.difficulty,
@@ -174,14 +181,14 @@ export default {
       }
 
       try {
-        const res = await axios.put(`/api/questions/${this.question.id}`, payload)
+        const res = await axios.post('/api/questions', payload)
         if (res.data.success) {
-          this.$emit('updated')
+          this.$emit('created')
         } else {
-          this.$emit('info', res.data.message || '更新失败', 'error')
+          this.$emit('info', res.data.message || '提交失败', 'error')
         }
       } catch (e) {
-        console.error('更新失败', e)
+        console.error('提交失败', e)
         this.$emit('info', '提交失败，请稍后重试', 'error')
       }
     },
