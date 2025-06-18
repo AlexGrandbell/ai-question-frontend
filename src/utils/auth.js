@@ -8,7 +8,7 @@ export function setUserInfo(user) {
 
 export function getUserInfo() {
     const data = localStorage.getItem(USER_KEY);
-    return data ? JSON.parse(data) : { id: 1, username: '嘉瑞' };
+    return data ? JSON.parse(data) : null;
 }
 
 export function clearUserInfo() {

@@ -13,7 +13,10 @@
             <img src="@/assets/icons/magic.svg" class="magic-icon" alt="magic" />
             AI出题
           </button>
-          <button @click="select('manual')">自主出题</button>
+          <button @click="select('manual')">
+            <img src="@/assets/icons/bulb.svg" class="magic-icon" alt="magic" />
+            自主出题
+          </button>
         </div>
       </div>
     </transition>
@@ -80,7 +83,7 @@ export default {
 }
 .dropdown {
   position: absolute;
-  width: 100px;
+  width: 130px;
   top: 100%;
   left: 0;
   margin-top: 6px;
@@ -117,6 +120,9 @@ export default {
   text-align: left;
   font-size: 14px;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .dropdown-content button:hover {
   background-color: #ecf0f1;

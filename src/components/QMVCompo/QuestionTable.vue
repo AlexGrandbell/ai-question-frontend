@@ -14,7 +14,7 @@
           <th class="left with-divider">题目</th>
           <th class="with-divider" style="width: 77px">题型</th>
           <th class="with-divider" style="width: 50px">难度</th>
-          <th class="with-divider" style="width: 100px">创建人</th>
+          <th class="with-divider" style="width: 150px">创建人</th>
           <th style="width: 145px">操作</th>
         </tr>
         </thead>
@@ -41,7 +41,10 @@
               {{ getDifficultyLabel(q.difficulty) }}
             </span>
           </td>
-          <td style="width: 100px">{{ q.userName || '未知'  }}</td>
+          <td style="width: 150px">
+            <span v-if="q.userId === getUserInfo().id" class="self-tag">我</span>
+            <span class="username-text">{{ (q.userName || '未知') }}</span>
+          </td>
           <td style="width: 130px">
             <button class="edit-btn" @click="handleEdit(q)">编辑</button>
             <button class="delete-btn" @click="handleDelete(q)">删除</button>
@@ -436,4 +439,25 @@ th.with-divider::after {
   width: 1px;
   background: linear-gradient(to bottom, transparent, #ddd 40%, #c5c5c5 60%, transparent);
 }
+
+.self-tag {
+  display: inline-block;
+  background-color: #4ca3dd;
+  color: white;
+  font-size: 10px;
+  padding: 4px 6px;
+  border-radius: 15px;
+  margin-right: 4px;
+}
+
+.username-text {
+  display: inline-block;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
 </style>
+

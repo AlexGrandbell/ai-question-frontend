@@ -16,12 +16,15 @@ import AppNavbar from '../components/AppNavbar.vue'
 import AppSidebar from "@/components/AppSidebar.vue";
 import QuestionManagerView from "@/view/QuestionManagerView.vue";
 import MarkdownView from './MarkdownView.vue'
+import SelfInfoView from "@/view/SelfInfoView.vue";
 
 const sidebarCollapsed = ref(false)
 const currentView = ref('QuestionManager')
 
 const currentViewComponent = computed(() => {
-  return currentView.value === 'StudyNotes' ? MarkdownView : QuestionManagerView
+  if (currentView.value === 'StudyNotes') return MarkdownView
+  if (currentView.value === 'UserProfile') return SelfInfoView
+  return QuestionManagerView
 })
 </script>
 

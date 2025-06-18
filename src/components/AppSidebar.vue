@@ -17,6 +17,14 @@
         <img src="@/assets/icons/book.svg" class="icon" />
         <span class="menu-label" :class="{ visible: !collapsed }" v-if="!collapsed">题 库 管 理</span>
       </div>
+      <div
+          class="menu-item"
+          :class="{ active: current === 'UserProfile' }"
+          @click="handleSelect('UserProfile')"
+      >
+        <img src="@/assets/icons/person.svg" class="icon" />
+        <span class="menu-label" :class="{ visible: !collapsed }" v-if="!collapsed">个 人 中 心</span>
+      </div>
     </div>
     <div class="collapse-toggle" @click="handleToggle">
       <img
