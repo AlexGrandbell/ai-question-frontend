@@ -46,6 +46,7 @@ select {
 textarea {
     width: 100%;
     outline: none;
+    border-radius: 8px;
     font-size: 16px;
 }
 .char-count {
@@ -55,6 +56,10 @@ textarea {
 }
 .required {
     color: red;
+    margin-right: 2px;
+}
+.unrequired{
+    color: rgba(255, 255, 255, 0);
     margin-right: 2px;
 }
 .answer-select {

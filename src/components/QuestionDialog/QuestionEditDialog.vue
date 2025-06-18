@@ -30,7 +30,7 @@
                    :placeholder="`剩余 ${5 - languageTags.length} 个，回车添加`"
             />
           </div>
-          <label>难度:</label>
+          <label><span class="required">*</span>难度:</label>
           <select v-model="form.difficulty">
             <option value="EASY">简单</option>
             <option value="MEDIUM">中等</option>

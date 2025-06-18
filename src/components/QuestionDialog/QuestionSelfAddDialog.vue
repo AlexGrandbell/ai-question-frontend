@@ -31,7 +31,7 @@
             />
           </div>
 
-          <label>难度:</label>
+          <label><span class="required">*</span>难度:</label>
           <select v-model="form.difficulty">
             <option value="EASY">简单</option>
             <option value="MEDIUM">中等</option>

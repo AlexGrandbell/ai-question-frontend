@@ -55,7 +55,13 @@
           @info="showToast"
       />
     </transition>
-
+    <transition name="fade-dialog">
+      <QuestionAIAddDialog
+          v-if="showAIGenerateDialog"
+          @close="showAIGenerateDialog = false"
+          @info="showToast"
+      />
+    </transition>
     <ToastMassage ref="toast" />
 
   </div>
@@ -69,6 +75,7 @@ import QuestionDetailDialog from '@/components/QuestionDialog/QuestionDetailDial
 import ToastMassage from "@/components/ToastMassage.vue";
 import QuestionSelfAddDialog from "@/components/QuestionDialog/QuestionSelfAddDialog.vue";
 import QuestionEditDialog from "@/components/QuestionDialog/QuestionEditDialog.vue";
+import QuestionAIAddDialog from "@/components/QuestionDialog/QuestionAIAddDialog.vue";
 import axios from "axios";
 
 export default {
@@ -80,7 +87,8 @@ export default {
     QuestionDetailDialog,
     ToastMassage,
     QuestionSelfAddDialog,
-    QuestionEditDialog
+    QuestionEditDialog,
+    QuestionAIAddDialog
   },
   data() {
     return {
@@ -109,6 +117,7 @@ export default {
       showSelfAddDialog: false,
       currentEditQuestion:null,
       showEditDialog: false,
+      showAIGenerateDialog: false
     }
   },
   computed: {
@@ -229,6 +238,8 @@ export default {
     handleAddQuestion(type) {
       if (type === 'manual') {
         this.showSelfAddDialog = true
+      }else if (type === 'AI') {
+        this.showAIGenerateDialog = true
       }
     },
     handleCreatedQuestion() {
