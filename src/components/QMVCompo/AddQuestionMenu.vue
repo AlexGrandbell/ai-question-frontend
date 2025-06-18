@@ -9,7 +9,10 @@
       <div v-if="showMenu" class="dropdown">
         <div class="arrow"></div>
         <div class="dropdown-content">
-          <button @click="select('AI')">AI出题</button>
+          <button @click="select('AI')">
+            <img src="@/assets/icons/magic.svg" class="magic-icon" alt="magic" />
+            AI出题
+          </button>
           <button @click="select('manual')">自主出题</button>
         </div>
       </div>
@@ -77,6 +80,7 @@ export default {
 }
 .dropdown {
   position: absolute;
+  width: 100px;
   top: 100%;
   left: 0;
   margin-top: 6px;
@@ -137,6 +141,13 @@ export default {
 img {
   pointer-events: auto;
   user-drag: none;
+  -webkit-user-drag: none;
+}
+
+.magic-icon {
+  width: 15px;
+  height: 15px;
+  user-select: none;
   -webkit-user-drag: none;
 }
 </style>

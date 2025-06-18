@@ -61,7 +61,7 @@
             <label><span class="required">*</span>答案：</label>
             <div class="answer-select">
               <label v-for="key in ['A','B','C','D']" :key="key">
-                <input type="radio" name="answer" :value="key" v-model="form.answer[0]" /> {{ key }}
+                <input type="radio"  style="margin-top: 0" name="answer" :value="key" v-model="form.answer[0]" /> {{ key }}
               </label>
             </div>
           </div>

@@ -106,6 +106,7 @@ export default {
         this.parsedOptions.forEach(opt => {
           text += `${opt.key}. ${opt.text}\n`
         })
+        text += `答案：${this.question.answer}\n`
       }
       navigator.clipboard.writeText(text).then(() => {
         this.copied = true

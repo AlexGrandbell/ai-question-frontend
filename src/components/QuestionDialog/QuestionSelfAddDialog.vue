@@ -69,6 +69,7 @@
                   name="answer"
                   :value="key"
                   v-model="form.answer"
+                  style="margin-top: 0"
                 /> {{ key }}
               </label>
             </div>
