@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import './DialogCSS.css';
 export default {
   name: 'QuestionDetailDialog',
   props: {
@@ -97,71 +98,8 @@ export default {
 </script>
 
 <style scoped>
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9;
-}
-
 .dialog-box {
-  background: white;
-  border-radius: 15px;
-  min-width: 800px;
-  max-width: 1000px;
-  width: 60%;
-  position: relative;
-  max-height: 60vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.dialog-content{
-  padding-right: 8px;
-  margin-right: 8px;
-  margin-top: 5px;
-  margin-left: 20px;
-  margin-bottom: 15px;
-  overflow-y: auto;
-}
-
-.dialog-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.dialog-content::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 4px;
-}
-
-.dialog-content::-webkit-scrollbar-thumb {
-  background-color: #2196f3;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.dialog-content::-webkit-scrollbar-thumb:hover {
-  background-color: #1d81d1;
-}
-
-.dialog-content::-webkit-scrollbar-thumb:active {
-  background-color: #1b73ba;
-}
-
-.dialog-header {
-  padding: 20px;
-  padding-bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  max-height: 80vh;
 }
 
 .dialog-box h2 {
@@ -215,27 +153,5 @@ export default {
 }
 .copy-icon:active {
   transform: scale(0.95);
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 20px;
-  height: 20px;
-  background-color: red;
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.51);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.close-button:hover {
-  transform: scale(1.3);
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.28);
-}
-.close-button:active {
-  transform: scale(0.95);
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.51);
 }
 </style>

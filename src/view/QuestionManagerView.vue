@@ -37,6 +37,14 @@
           @close="showDialog = false"
       />
     </transition>
+    <transition name="fade-dialog">
+      <QuestionSelfAddDialog
+          v-if="showSelfAddDialog"
+          @close="showSelfAddDialog = false"
+          @created="handleCreatedQuestion"
+          @info="showToast"
+      />
+    </transition>
     <ToastMassage ref="toast" />
   </div>
 </template>
@@ -47,6 +55,7 @@ import QuestionTable from '@/components/QuestionTable.vue'
 import AddQuestionMenu from '@/components/AddQuestionMenu.vue'
 import QuestionDetailDialog from '@/components/QuestionDetailDialog.vue'
 import ToastMassage from "@/components/ToastMassage.vue";
+import QuestionSelfAddDialog from "@/components/QuestionSelfAddDialog.vue";
 import axios from "axios";
 
 export default {
@@ -56,7 +65,8 @@ export default {
     QuestionTable,
     AddQuestionMenu,
     QuestionDetailDialog,
-    ToastMassage
+    ToastMassage,
+    QuestionSelfAddDialog
   },
   data() {
     return {
@@ -81,7 +91,8 @@ export default {
         last: true
       },
       showDialog: false,
-      currentQuestion: null
+      currentQuestion: null,
+      showSelfAddDialog: false,
     }
   },
   computed: {
@@ -184,9 +195,16 @@ export default {
         this.$refs.toast.addToast('删除失败，请稍后重试', 'error')
       }
     },
-    // handleAddQuestion(type) {
-    handleAddQuestion() {
-      // TODO: open modal for type: 'AI' or 'manual'
+    //打开哪个出题
+    handleAddQuestion(type) {
+      if (type === 'manual') {
+        this.showSelfAddDialog = true
+      }
+    },
+    handleCreatedQuestion() {
+      this.showSelfAddDialog = false
+      this.$refs.toast.addToast('创建成功', 'success')
+      this.handleSearch()
     },
     showToast(message, type = 'success') {
       this.$refs.toast.addToast(message, type)
