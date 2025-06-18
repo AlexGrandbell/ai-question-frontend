@@ -4,16 +4,17 @@
       <table>
         <thead>
         <tr class="table-head">
-          <th style="width: 40px">
+          <th class="with-divider" style="width: 40px">
             <input
                 type="checkbox"
                 :checked="allSelected"
                 @change="toggleSelectAll"
             />
           </th>
-          <th class="left">题目</th>
-          <th style="width: 100px">题型</th>
-          <th style="width: 100px">创建人</th>
+          <th class="left with-divider">题目</th>
+          <th class="with-divider" style="width: 77px">题型</th>
+          <th class="with-divider" style="width: 50px">难度</th>
+          <th class="with-divider" style="width: 100px">创建人</th>
           <th style="width: 145px">操作</th>
         </tr>
         </thead>
@@ -33,7 +34,12 @@
           <td class="left">
             <span class="clickable" @click="showDetail(q)">{{ q.content }}</span>
           </td>
-          <td style="width: 100px">{{ getTypeLabel(q.type) }}</td>
+          <td style="width: 80px">{{ getTypeLabel(q.type) }}</td>
+          <td style="width: 50px; text-align: center;">
+            <span :class="['difficulty-cell', getDifficultyClass(q.difficulty)]">
+              {{ getDifficultyLabel(q.difficulty) }}
+            </span>
+          </td>
           <td style="width: 100px">小明</td>
           <td style="width: 130px">
             <button class="edit-btn">编辑</button>
@@ -147,6 +153,18 @@ export default {
           return type
       }
     },
+    getDifficultyLabel(difficulty) {
+      switch (difficulty) {
+        case 'EASY':
+          return '简单'
+        case 'MEDIUM':
+          return '中等'
+        case 'HARD':
+          return '困难'
+        default:
+          return difficulty
+      }
+    },
     showDetail(q) {
       this.$emit('show-detail', q.id)
     },
@@ -174,6 +192,18 @@ export default {
         this.$emit('change-page', page)
       } else {
         alert('页码超出范围')
+      }
+    },
+    getDifficultyClass(difficulty) {
+      switch (difficulty) {
+        case 'EASY':
+          return 'easy';
+        case 'MEDIUM':
+          return 'medium';
+        case 'HARD':
+          return 'hard';
+        default:
+          return '';
       }
     }
   },
@@ -243,6 +273,10 @@ th, td {
 
 th.left, td.left {
   text-align: left;
+}
+
+th.left{
+  padding-left: 15px;
 }
 
 td.left {
@@ -347,4 +381,39 @@ td.left {
   padding: 20px;
   font-size: 16px;
 }
+
+.difficulty-cell {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.easy {
+  background-color: #27ae60;
+}
+
+.medium {
+  background-color: #f39c12;
+}
+
+.hard {
+  background-color: #e74c3c;
+}
+
+th.with-divider {
+  position: relative;
+}
+
+th.with-divider::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  right: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #ddd 40%, #c5c5c5 60%, transparent);
+}
 </style>
+

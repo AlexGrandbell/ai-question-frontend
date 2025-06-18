@@ -19,7 +19,7 @@
           <input
             type="text"
             v-model="localFilter.keyword"
-            placeholder="输入关键字搜索题干"
+            placeholder="输入关键字搜索题干, 按回车搜索"
             @keyup.enter="onSearch"
           />
           <img
