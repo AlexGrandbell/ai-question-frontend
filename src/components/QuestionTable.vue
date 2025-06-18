@@ -49,7 +49,7 @@
         </tbody>
         <tbody v-if="questions.length === 0">
         <tr>
-          <td colspan="5" class="empty-row">暂无数据</td>
+          <td colspan="5" class="empty-row">暂无数据, 先去出题吧</td>
         </tr>
         </tbody>
       </table>
@@ -191,7 +191,7 @@ export default {
       if (page >= 0 && page < this.pageInfo.totalPages) {
         this.$emit('change-page', page)
       } else {
-        alert('页码超出范围')
+        this.$emit('info','页码超出范围', 'warning')
       }
     },
     getDifficultyClass(difficulty) {

@@ -18,7 +18,7 @@
         <p ><strong>题目内容：</strong>{{ question.content }}</p>
         <div v-if="question.type !== 'PROGRAMMING'">
           <p style="margin-bottom: 0"><strong>选项：</strong></p>
-          <div v-for="opt in parsedOptions" :key="opt.key">{{ opt.key }}: {{ opt.text }}</div>
+          <div v-for="opt in parsedOptions" :key="opt.key">{{ opt.key }}. {{ opt.text }}</div>
         </div>
         <p v-if="question.type !== 'PROGRAMMING'"><strong>答案：</strong>{{ question.answer }}</p>
         <p><strong>难度：</strong>
@@ -84,7 +84,7 @@ export default {
       let text = this.question.content + '\n'
       if (this.question.type !== 'PROGRAMMING') {
         this.parsedOptions.forEach(opt => {
-          text += `${opt.key}: ${opt.text}\n`
+          text += `${opt.key}. ${opt.text}\n`
         })
       }
       navigator.clipboard.writeText(text).then(() => {

@@ -149,6 +149,7 @@ export default {
         direction: 'ASC',
         language: ''
       };
+      this.$emit('info','已重置', 'success')
       this.$emit('update:filter', { ...this.localFilter });
       this.$emit('search');
       }

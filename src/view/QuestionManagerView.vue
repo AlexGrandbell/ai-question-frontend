@@ -4,6 +4,7 @@
         :filter="filter"
         @update:filter="handleFilterUpdate"
         @search="handleSearch"
+        @info="showToast"
     />
 
     <div class="action-bar">
@@ -27,6 +28,7 @@
         @change-size="handlePageSizeChange"
         @delete-one="handleSingleDelete"
         @show-detail="handleShowDetail"
+        @info="showToast"
     />
     <transition name="fade-dialog">
       <QuestionDetailDialog
@@ -35,6 +37,7 @@
           @close="showDialog = false"
       />
     </transition>
+    <ToastMassage ref="toast" />
   </div>
 </template>
 
@@ -43,6 +46,7 @@ import QuestionSearch from "@/components/QuestionSearch.vue";
 import QuestionTable from '@/components/QuestionTable.vue'
 import AddQuestionMenu from '@/components/AddQuestionMenu.vue'
 import QuestionDetailDialog from '@/components/QuestionDetailDialog.vue'
+import ToastMassage from "@/components/ToastMassage.vue";
 import axios from "axios";
 
 export default {
@@ -51,7 +55,8 @@ export default {
     QuestionSearch,
     QuestionTable,
     AddQuestionMenu,
-    QuestionDetailDialog
+    QuestionDetailDialog,
+    ToastMassage
   },
   data() {
     return {
@@ -122,11 +127,11 @@ export default {
           this.currentQuestion = res.data.data
           this.showDialog = true
         } else {
-          alert(res.data.message || '获取题目详情失败')
+          this.$refs.toast.addToast(res.data.message || '获取题目详情失败', 'error')
         }
       } catch (e) {
         console.error('获取题目详情失败', e)
-        alert('获取题目失败')
+        this.$refs.toast.addToast('获取题目失败', 'error')
       }
     },
     async handlePageChange(page) {
@@ -152,13 +157,13 @@ export default {
         if (res.data.success) {
           this.selectedIds = [];
           this.handleSearch();
-          alert(res.data.message || '删除成功');
+          this.$refs.toast.addToast(res.data.message || '删除成功', 'success')
         } else {
-          alert(res.data.message || '删除失败');
+          this.$refs.toast.addToast(res.data.message || '删除失败', 'error')
         }
       } catch (error) {
         console.error('删除请求失败:', error);
-        alert('删除失败，请稍后重试');
+        this.$refs.toast.addToast('删除失败，请稍后重试', 'error')
       }
     },
     async handleSingleDelete(id) {
@@ -170,18 +175,21 @@ export default {
         if (res.data.success) {
           this.selectedIds = this.selectedIds.filter(i => i !== id);
           this.handleSearch();
-          alert('删除成功');
+          this.$refs.toast.addToast('删除成功', 'success')
         } else {
-          alert('删除失败');
+          this.$refs.toast.addToast('删除失败', 'error')
         }
       } catch (e) {
         console.error('单题删除失败', e);
-        alert('删除失败，请稍后重试');
+        this.$refs.toast.addToast('删除失败，请稍后重试', 'error')
       }
     },
     // handleAddQuestion(type) {
     handleAddQuestion() {
       // TODO: open modal for type: 'AI' or 'manual'
+    },
+    showToast(message, type = 'success') {
+      this.$refs.toast.addToast(message, type)
     }
   },
   mounted() {
