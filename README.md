@@ -1,5 +1,5 @@
 # ai-question-frontend
-
+你可能需要修改的地方： vue.config.js中后端的端口号
 ## Project setup
 ```
 npm install
