@@ -100,13 +100,16 @@
 
           <!-- 按钮 -->
           <div class="form-row button-group">
-            <button class="confirm" @click="handleGenerate">生成</button>
+            <button class="confirm" @click="handleGenerate" style="margin-left: 10px" :disabled="isCurrentGenerating">生成</button>
+          </div>
+          <div class="form-row button-group">
+            <button class="confirm" @click="handleStop" style="margin-left: 10px">结束</button>
           </div>
         </div>
 
         <div class="right-panel">
           <div class="ai-response-placeholder">
-            <div v-if="questions.length === 0" class="empty-placeholder">AI题目生成区</div>
+            <div v-if="questions.length === 0 && !isCurrentGenerating" class="empty-placeholder">AI题目生成区</div>
             <div
               class="chat-bubble"
               v-for="(q, index) in questions"
@@ -166,6 +169,53 @@
                 </div>
               </div>
             </div>
+            <!-- 正在生成气泡 -->
+            <div v-if="isCurrentGenerating" class="chat-bubble generating-bubble">
+              <div class="bubble-top">
+                <div class="bubble-top-row">
+                  <div class="model-info">
+                    <span class="ai-label">{{ currentGeneratingQuestion.isDeepThinking ? 'DeepSeek-R1' : 'DeepSeek-V3' }}</span>
+                    <span class="deep-tag">
+                      {{ currentGeneratingQuestion.isDeepThinking ? '正在深度思考' : '正在思考' }}
+                      <span class="spinner"></span>
+                    </span>
+                  </div>
+                  <div class="create-time">生成中...</div>
+                </div>
+                <div class="divider"></div>
+                <div class="ai-response deepthink-response" v-if="currentGeneratingQuestion.isDeepThinking">{{ currentGeneratingQuestion.deepThinkingResponse }}</div>
+                <div v-if="currentGeneratingQuestion.isDeepThinking" class="divider"></div>
+                <div class="ai-response">{{ currentGeneratingQuestion.chatResponse }}</div>
+                <div class="divider"></div>
+              </div>
+              <div class="bubble-bottom">
+                <div class="param"><strong>题型:</strong> {{ currentGeneratingQuestion.type === 'SINGLE_CHOICE' ? '单选题' : currentGeneratingQuestion.type === 'MULTIPLE_CHOICE' ? '多选题' : '编程题' }}</div>
+                <div class="param">
+                  <strong>难度:</strong>
+                  <span
+                    :class="[
+                      'difficulty-label',
+                      currentGeneratingQuestion.difficulty === 'EASY' ? 'difficulty-easy' :
+                      currentGeneratingQuestion.difficulty === 'MEDIUM' ? 'difficulty-medium' : 'difficulty-hard'
+                    ]"
+                  >
+                    {{ currentGeneratingQuestion.difficulty === 'EASY' ? '简单' : currentGeneratingQuestion.difficulty === 'MEDIUM' ? '中等' : '困难' }}
+                  </span>
+                </div>
+                <div class="param" v-if="currentGeneratingQuestion.language">
+                  <strong>考点:</strong>
+                  <span
+                    class="tag-label"
+                    v-for="(tag, idx) in currentGeneratingQuestion.language.split(',')"
+                    :key="idx"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+                <div class="param" v-if="currentGeneratingQuestion.discribe"><strong>描述:</strong> {{ currentGeneratingQuestion.discribe }}</div>
+                <div class="param" v-if="currentGeneratingQuestion.example"><strong>样例:</strong> {{ currentGeneratingQuestion.example }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -202,113 +252,142 @@ export default {
         example: ''
       },
       languageTags: [],
-      generated: false,
       newTag: '',
       useDeepThinking: false,
       showEditAiGenerateDialog: false,
       currentEditAIQuestion: null,
+      currentGeneratingQuestion: {
+        type: "",
+        difficulty: "",
+        language: "",
+        discribe: "",
+        example: "",
+        isDeepThinking: false,
+        deepThinkingResponse: "",
+        chatResponse: "",
+        creatTime: "",
+      },
+      isCurrentGenerating: false,
+      startTime: null,
       questions:[
-        {
-          //用户输入
-          type: "MULTIPLE_CHOICE",
-          difficulty: "MEDIUM",
-          language: "",
-          discribe: "",
-          example: "",
-          //AI生成
-          isDeepThinking: true,
-          deepThinkingResponse: "这是深度思考的结果",
-          chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-          //其他参数
-          creatTime: "2023-10-01 11:00:00",
-          useTime:24,//深度思考时间
-          showDeepthinking: true,
-          collapsedDeepThinking: false,
-        },
-        {
-          //用户输入
-          type: "SINGLE_CHOICE",
-          difficulty: "EASY",
-          language: "java,go,c",
-          discribe: "这是一段描述",
-          example: "设置一个例子",
-          //AI生成
-          isDeepThinking: false,
-          deepThinkingResponse: "",
-          chatResponse: '{"content": "以下哪个选项是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"以上都是"}, "answer": "D"}',
-          //其他参数
-          creatTime: "2023-10-01 12:00:00",
-          useTime:0,
-          showDeepthinking: false,
-          collapsedDeepThinking: false,
-        },
-        {
-          //用户输入
-          type: "MULTIPLE_CHOICE",
-          difficulty: "EASY",
-          language: "java,go,c",
-          discribe: "这是一段描述",
-          example: "设置一个例子",
-          //AI生成
-          isDeepThinking: false,
-          deepThinkingResponse: "",
-          chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-          //其他参数
-          creatTime: "2023-10-01 12:00:00",
-          useTime:0,
-          showDeepthinking: false,
-          collapsedDeepThinking: false,
-        },
-        {
-          //用户输入
-          type: "PROGRAMMING",
-          difficulty: "HARD",
-          language: "java,go,c",
-          discribe: "这是一段描述",
-          example: "设置一个例子",
-          //AI生成
-          isDeepThinking: false,
-          deepThinkingResponse: "",
-          chatResponse: '{"content": "请编写一个函数，计算两个数的和。"}',
-          //其他参数
-          creatTime: "2023-10-01 12:00:00",
-          useTime:0,
-          showDeepthinking: false,
-          collapsedDeepThinking: false,
-        },
-        {
-          //用户输入
-          type: "PROGRAMMING",
-          difficulty: "HARD",
-          language: "java,go,c",
-          discribe: "这是一段描述",
-          example: "设置一个例子",
-          //AI生成
-          isDeepThinking: false,
-          deepThinkingResponse: "",
-          chatResponse: '{"content": "请编写一个函数，计算两个数的和。"',
-          //其他参数
-          creatTime: "2023-10-01 12:00:00",
-          useTime:0,
-          showDeepthinking: false,
-          collapsedDeepThinking: false,
-        }
+        // {
+        //   //用户输入
+        //   type: "MULTIPLE_CHOICE",
+        //   difficulty: "MEDIUM",
+        //   language: "",
+        //   discribe: "",
+        //   example: "",
+        //   //AI生成
+        //   isDeepThinking: true,
+        //   deepThinkingResponse: "这是深度思考的结果",
+        //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+        //   //其他参数
+        //   creatTime: "2023-10-01 11:00:00",
+        //   useTime:24,//深度思考时间
+        //   collapsedDeepThinking: false,
+        // },
+        // {
+        //   //用户输入
+        //   type: "SINGLE_CHOICE",
+        //   difficulty: "EASY",
+        //   language: "java,go,c",
+        //   discribe: "这是一段描述",
+        //   example: "设置一个例子",
+        //   //AI生成
+        //   isDeepThinking: false,
+        //   deepThinkingResponse: "",
+        //   chatResponse: '{"content": "以下哪个选项是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"以上都是"}, "answer": "D"}',
+        //   //其他参数
+        //   creatTime: "2023-10-01 12:00:00",
+        //   useTime:0,
+        //   collapsedDeepThinking: false,
+        // },
+        // {
+        //   //用户输入
+        //   type: "MULTIPLE_CHOICE",
+        //   difficulty: "EASY",
+        //   language: "java,go,c",
+        //   discribe: "这是一段描述",
+        //   example: "设置一个例子",
+        //   //AI生成
+        //   isDeepThinking: false,
+        //   deepThinkingResponse: "",
+        //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+        //   //其他参数
+        //   creatTime: "2023-10-01 12:00:00",
+        //   useTime:0,
+        //   collapsedDeepThinking: false,
+        // },
+        // {
+        //   //用户输入
+        //   type: "PROGRAMMING",
+        //   difficulty: "HARD",
+        //   language: "java,go,c",
+        //   discribe: "这是一段描述",
+        //   example: "设置一个例子",
+        //   //AI生成
+        //   isDeepThinking: false,
+        //   deepThinkingResponse: "",
+        //   chatResponse: '{"content": "请编写一个函数，计算两个数的和。"}',
+        //   //其他参数
+        //   creatTime: "2023-10-01 12:00:00",
+        //   useTime:0,
+        //   collapsedDeepThinking: false,
+        // },
+        // {
+        //   //用户输入
+        //   type: "PROGRAMMING",
+        //   difficulty: "HARD",
+        //   language: "java,go,c",
+        //   discribe: "这是一段描述",
+        //   example: "设置一个例子",
+        //   //AI生成
+        //   isDeepThinking: false,
+        //   deepThinkingResponse: "",
+        //   chatResponse: '{"content": "请编写一个函数，计算两个数的和。"',
+        //   //其他参数
+        //   creatTime: "2023-10-01 12:00:00",
+        //   useTime:0,
+        //   collapsedDeepThinking: false,
+        // }
       ]
     }
   },
   methods: {
-    async handleGenerate() {
+    handleGenerate() {
       if (!this.form.type || !this.form.difficulty) {
         this.$emit('info', '题型与难度为必填项', 'warning')
         return
       }
-      try {
-        this.generated = false
-        await this.$refs.aiCraftRef.submit(this.form, this.languageTags.join(','), this.useDeepThinking)
-        this.generated = true
-      } catch (e) {
-        this.$emit('info', '生成失败，请重试', 'error')
+      this.currentGeneratingQuestion = {
+        ...this.form,
+        language: this.languageTags.join(','),
+        isDeepThinking: this.useDeepThinking,
+        deepThinkingResponse: this.useDeepThinking ? '这是深度思考的结果' : '',
+        chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+        creatTime: new Date().toLocaleString(),
       }
+      this.startTime = Date.now()
+      this.isCurrentGenerating = true
+      // this.scrollToBottom();
+    },
+    handleStop() {
+      if (this.isCurrentGenerating) {
+        const endTime = Date.now()
+        const useTime = this.currentGeneratingQuestion.isDeepThinking
+          ? Math.floor((endTime - this.startTime) / 1000)
+          : 0
+
+        this.questions.push({
+          ...this.currentGeneratingQuestion,
+          useTime,
+          collapsedDeepThinking: false
+        })
+
+        this.isCurrentGenerating = false
+        this.$emit('info', '生成已结束', 'success')
+      }
+      this.scrollToBottom();
     },
     addTag() {
       const tag = this.newTag.trim();
@@ -378,6 +457,14 @@ export default {
       };
       this.showEditAiGenerateDialog = true;
     },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const panel = this.$el.querySelector('.right-panel');
+        if (panel) {
+          panel.scrollTop = panel.scrollHeight;
+        }
+      });
+    }
   }
 }
 </script>
@@ -451,6 +538,7 @@ button:disabled {
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
+  margin-left: 10px;
 }
 .deep-think-btn.active {
   background-color: #4aa6ef;
@@ -689,4 +777,22 @@ button:disabled {
   margin-top: 40%;
 }
 
+.generating-bubble {
+  background-color: #fff3e5;
+}
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #4aa6ef;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 6px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(720deg);
+  }
+}
 </style>

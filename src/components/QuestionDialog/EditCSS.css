@@ -82,10 +82,11 @@ textarea {
     transition: all 0.2s;
 }
 
-.cancel:hover, .confirm:hover {
+.cancel:hover,
+.confirm:not(:disabled):hover {
     transform: scale(1.1);
 }
-.cancel:active, .confirm:active {
+.cancel:active, .confirm:not(:disabled):active {
     transform: scale(1);
 }
 .cancel {
