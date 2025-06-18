@@ -28,6 +28,7 @@
         @change-size="handlePageSizeChange"
         @delete-one="handleSingleDelete"
         @show-detail="handleShowDetail"
+        @edit="handleShowEditDetail"
         @info="showToast"
     />
     <transition name="fade-dialog">
@@ -45,17 +46,29 @@
           @info="showToast"
       />
     </transition>
+    <transition name="fade-dialog">
+      <QuestionEditDialog
+          v-if="showEditDialog"
+          :question="currentEditQuestion"
+          @close="showEditDialog = false"
+          @updated="handleUpdatedQuestion"
+          @info="showToast"
+      />
+    </transition>
+
     <ToastMassage ref="toast" />
+
   </div>
 </template>
 
 <script>
-import QuestionSearch from "@/components/QuestionSearch.vue";
-import QuestionTable from '@/components/QuestionTable.vue'
-import AddQuestionMenu from '@/components/AddQuestionMenu.vue'
-import QuestionDetailDialog from '@/components/QuestionDetailDialog.vue'
+import QuestionSearch from "@/components/QMVCompo/QuestionSearch.vue";
+import QuestionTable from '@/components/QMVCompo/QuestionTable.vue'
+import AddQuestionMenu from '@/components/QMVCompo/AddQuestionMenu.vue'
+import QuestionDetailDialog from '@/components/QuestionDialog/QuestionDetailDialog.vue'
 import ToastMassage from "@/components/ToastMassage.vue";
-import QuestionSelfAddDialog from "@/components/QuestionSelfAddDialog.vue";
+import QuestionSelfAddDialog from "@/components/QuestionDialog/QuestionSelfAddDialog.vue";
+import QuestionEditDialog from "@/components/QuestionDialog/QuestionEditDialog.vue";
 import axios from "axios";
 
 export default {
@@ -66,7 +79,8 @@ export default {
     AddQuestionMenu,
     QuestionDetailDialog,
     ToastMassage,
-    QuestionSelfAddDialog
+    QuestionSelfAddDialog,
+    QuestionEditDialog
   },
   data() {
     return {
@@ -93,6 +107,8 @@ export default {
       showDialog: false,
       currentQuestion: null,
       showSelfAddDialog: false,
+      currentEditQuestion:null,
+      showEditDialog: false,
     }
   },
   computed: {
@@ -137,6 +153,20 @@ export default {
         if (res.data.success) {
           this.currentQuestion = res.data.data
           this.showDialog = true
+        } else {
+          this.$refs.toast.addToast(res.data.message || '获取题目详情失败', 'error')
+        }
+      } catch (e) {
+        console.error('获取题目详情失败', e)
+        this.$refs.toast.addToast('获取题目失败', 'error')
+      }
+    },
+    async handleShowEditDetail(id) {
+      try {
+        const res = await axios.get(`/api/questions/${id}`)
+        if (res.data.success) {
+          this.currentEditQuestion = res.data.data
+          this.showEditDialog = true
         } else {
           this.$refs.toast.addToast(res.data.message || '获取题目详情失败', 'error')
         }
@@ -205,6 +235,11 @@ export default {
       this.showSelfAddDialog = false
       this.$refs.toast.addToast('创建成功', 'success')
       this.handleSearch()
+    },
+    handleUpdatedQuestion() {
+      this.showEditDialog = false;
+      this.$refs.toast.addToast('编辑成功', 'success')
+      this.handleSearch();
     },
     showToast(message, type = 'success') {
       this.$refs.toast.addToast(message, type)

@@ -42,7 +42,7 @@
           </td>
           <td style="width: 100px">小明</td>
           <td style="width: 130px">
-            <button class="edit-btn">编辑</button>
+            <button class="edit-btn" @click="$emit('edit',q.id)">编辑</button>
             <button class="delete-btn" @click="$emit('delete-one', q.id)">删除</button>
           </td>
         </tr>
@@ -384,7 +384,7 @@ td.left {
 
 .difficulty-cell {
   padding: 5px 10px;
-  border-radius: 20px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: bold;
   color: white;

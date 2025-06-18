@@ -15,7 +15,7 @@
 
       <div class="search-box">
         <div class="input-wrapper">
-          <img src="@/assets/icons/search.svg" alt="search" />
+          <img src="../../assets/icons/search.svg" alt="search" />
           <input
             type="text"
             v-model="localFilter.keyword"
@@ -23,7 +23,7 @@
             @keyup.enter="onSearch"
           />
           <img
-            src="@/assets/icons/cross.svg"
+            src="../../assets/icons/cross.svg"
             class="clear-icon"
             v-if="localFilter.keyword"
             @click="localFilter.keyword = ''"
@@ -85,7 +85,7 @@
               class="text-input"
             />
             <img
-              src="@/assets/icons/cross.svg"
+              src="../../assets/icons/cross.svg"
               class="clear-icon"
               v-if="localFilter.language"
               @click="localFilter.language = ''"
@@ -149,7 +149,7 @@ export default {
         direction: 'ASC',
         language: ''
       };
-      this.$emit('info','已重置', 'success')
+      this.$emit('info','已重置搜索条件', 'success')
       this.$emit('update:filter', { ...this.localFilter });
       this.$emit('search');
       }

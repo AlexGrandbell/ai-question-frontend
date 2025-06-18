@@ -20,7 +20,15 @@
           <p style="margin-bottom: 0"><strong>选项：</strong></p>
           <div v-for="opt in parsedOptions" :key="opt.key">{{ opt.key }}. {{ opt.text }}</div>
         </div>
-        <p v-if="question.type !== 'PROGRAMMING'"><strong>答案：</strong>{{ question.answer }}</p>
+        <p v-if="question.type !== 'PROGRAMMING'"><strong>答案：</strong>
+          <span
+              v-for="ans in answerArray"
+              :key="ans"
+              class="answer-tag"
+          >
+            {{ ans }}
+          </span>
+        </p>
         <p><strong>难度：</strong>
           <span :class="['difficulty-tag', difficultyClass]">{{ difficultyLabel }}</span>
         </p>
@@ -44,6 +52,9 @@ export default {
     }
   },
   computed: {
+    answerArray() {
+      return (this.question.answer || '').split(',').filter(a => a)
+    },
     parsedOptions() {
       try {
         const options = JSON.parse(this.question.options || '{}')
@@ -116,7 +127,7 @@ export default {
 
 .difficulty-tag {
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: 6px;
   color: white;
   font-size: 12px;
 }
@@ -153,5 +164,15 @@ export default {
 }
 .copy-icon:active {
   transform: scale(0.95);
+}
+
+.answer-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 3px;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
 }
 </style>

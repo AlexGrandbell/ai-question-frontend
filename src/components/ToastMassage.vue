@@ -128,7 +128,7 @@ export default {
 
 .toast-fade-leave-active {
   position: absolute;
-  width: 100%;
+  width: 289px;
 }
 
 .toast-fade-enter-from {

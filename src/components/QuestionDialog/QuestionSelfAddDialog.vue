@@ -2,7 +2,7 @@
   <div class="dialog-overlay">
     <div class="dialog-box">
       <div class="dialog-header">
-        <h2 class="header-title" style="margin-bottom: 10px;margin-top: 0">添加题目</h2>
+        <h2 class="header-title">添加题目</h2>
         <div class="close-button" @click="$emit('close')"></div>
       </div>
 
@@ -11,7 +11,6 @@
         <div class="form-row">
           <label><span class="required">*</span>题型:</label>
           <select v-model="form.type">
-            <option value="">请选择</option>
             <option value="SINGLE_CHOICE">单选题</option>
             <option value="MULTIPLE_CHOICE">多选题</option>
             <option value="PROGRAMMING">编程题</option>
@@ -92,12 +91,13 @@
 <script>
 import axios from "axios";
 import './DialogCSS.css';
+import './EditCSS.css';
 export default {
   name: 'QuestionSelfAddDialog',
   data() {
     return {
       form: {
-        type: 'MULTIPLE_CHOICE',
+        type: 'SINGLE_CHOICE',
         content: '',
         options: { A: '', B: '', C: '', D: '' },
         answer: [],
@@ -140,7 +140,7 @@ export default {
             this.$emit('info', '多选题至少选择两个答案', 'warning')
             return
           }
-          payload.answer = this.form.answer.join(',')
+          payload.answer = this.form.answer.sort().join(',')
         } else {
           if (!this.form.answer) {
             this.$emit('info', '请选择答案', 'warning')
@@ -165,92 +165,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.dialog-box {
-  max-height: 80vh;
-}
-.input-add{
-  width: 100%;
-  outline: none;
-  margin: 0;
-}
-
-select {
-  padding: 6px 8px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.form-row {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  margin-bottom: 10px;
-  flex-wrap: nowrap;
-}
-
-.form-row label {
-  white-space: nowrap;
-}
-.form-row.column {
-  flex-direction: column;
-  align-items: flex-start;
-}
-textarea {
-  width: 100%;
-  outline: none;
-  font-size: 16px;
-}
-.char-count {
-  font-size: 12px;
-  color: gray;
-  align-self: flex-end;
-}
-.required {
-  color: red;
-  margin-right: 2px;
-}
-.answer-select {
-  display: flex;
-  gap: 50px;
-}
-
-.dialog-footer {
-  padding: 12px 20px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-.cancel, .confirm {
-  padding: 6px 14px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.cancel:hover, .confirm:hover {
-  transform: scale(1.1);
-}
-.cancel:active, .confirm:active {
-  transform: scale(1);
-}
-.cancel {
-  background: #ccc;
-}
-.confirm {
-  background: #2196f3;
-  color: white;
-}
-.answer-select label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-</style>

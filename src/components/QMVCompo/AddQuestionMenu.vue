@@ -1,7 +1,7 @@
 <template>
   <div class="add-question-menu" ref="menuRoot">
     <button class="main-button" @click="toggleMenu">
-      <img src="@/assets/icons/plus.svg" alt="plus" />
+      <img src="../../assets/icons/plus.svg" alt="plus" />
       <span>出题</span>
       <img :src="showMenu ? require('@/assets/icons/up.svg') : require('@/assets/icons/down.svg')" alt="arrow" />
     </button>
@@ -66,10 +66,10 @@ export default {
   transition: transform 0.2s ease;
 }
 .main-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .main-button:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 .main-button img {
   width: 16px;
