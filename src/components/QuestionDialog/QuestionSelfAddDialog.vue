@@ -106,6 +106,7 @@ import axios from "axios";
 import './DialogCSS.css';
 import './EditCSS.css';
 import './TagCSS.css';
+import { getUserInfo } from '@/utils/auth';
 export default {
   name: 'QuestionSelfAddDialog',
   data() {
@@ -173,7 +174,9 @@ export default {
         }
       }
 
+      const user = getUserInfo();
       const payload = {
+        userId: user.id,
         type: this.form.type,
         content: this.form.content,
         difficulty: this.form.difficulty,

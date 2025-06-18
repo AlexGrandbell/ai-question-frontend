@@ -29,6 +29,7 @@
                 type="checkbox"
                 :checked="isChecked(q.id)"
                 @change="toggleSelect(q.id)"
+                :disabled="q.userId !== getUserInfo().id"
             />
           </td>
           <td class="left">
@@ -40,10 +41,10 @@
               {{ getDifficultyLabel(q.difficulty) }}
             </span>
           </td>
-          <td style="width: 100px">小明</td>
+          <td style="width: 100px">{{ q.userName || '未知'  }}</td>
           <td style="width: 130px">
-            <button class="edit-btn" @click="$emit('edit',q.id)">编辑</button>
-            <button class="delete-btn" @click="$emit('delete-one', q.id)">删除</button>
+            <button class="edit-btn" @click="handleEdit(q)">编辑</button>
+            <button class="delete-btn" @click="handleDelete(q)">删除</button>
           </td>
         </tr>
         </tbody>
@@ -126,7 +127,7 @@
 </template>
 
 <script>
-
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'QuestionTable',
@@ -141,6 +142,9 @@ export default {
     }
   },
   methods: {
+    getUserInfo() {
+      return getUserInfo() || { id: -1, name: '未知用户' }
+    },
     getTypeLabel(type) {
       switch (type) {
         case 'SINGLE_CHOICE':
@@ -179,11 +183,12 @@ export default {
       this.$emit('update:selected', selected)
     },
     toggleSelectAll(event) {
+      const currentUserId = this.getUserInfo().id;
       if (event.target.checked) {
-        const allIds = this.questions.map(q => q.id)
-        this.$emit('update:selected', allIds)
+        const ownIds = this.questions.filter(q => q.userId === currentUserId).map(q => q.id);
+        this.$emit('update:selected', ownIds);
       } else {
-        this.$emit('update:selected', [])
+        this.$emit('update:selected', []);
       }
     },
     jumpToPage() {
@@ -205,11 +210,27 @@ export default {
         default:
           return '';
       }
+    },
+    handleEdit(q) {
+      if (q.userId !== this.getUserInfo().id) {
+        this.$emit('info', '您无权编辑非您所出的题目', 'warning');
+        return;
+      }
+      this.$emit('edit', q.id);
+    },
+    handleDelete(q) {
+      if (q.userId !== this.getUserInfo().id) {
+        this.$emit('info', '您无权删除非您所出的题目', 'warning');
+        return;
+      }
+      this.$emit('delete-one', q.id);
     }
   },
   computed: {
     allSelected() {
-      return this.questions.length > 0 && this.selected.length === this.questions.length
+      const currentUserId = this.getUserInfo().id;
+      const ownIds = this.questions.filter(q => q.userId === currentUserId).map(q => q.id);
+      return ownIds.length > 0 && ownIds.every(id => this.selected.includes(id));
     },
     visiblePages() {
       const total = this.pageInfo.totalPages || 1
@@ -416,4 +437,3 @@ th.with-divider::after {
   background: linear-gradient(to bottom, transparent, #ddd 40%, #c5c5c5 60%, transparent);
 }
 </style>
-
