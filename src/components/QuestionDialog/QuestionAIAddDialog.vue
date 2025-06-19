@@ -161,7 +161,7 @@
                 <div class="param" v-if="q.discribe"><strong>描述:</strong> {{ q.discribe }}</div>
                 <div class="param" v-if="q.example"><strong>样例:</strong> {{ q.example }}</div>
                 <div class="bubble-actions">
-                  <button class="action-btn change-btn" @click="changeFormat(index)" data-tooltip="可缩进、可修改">修改格式</button>
+                  <button class="action-btn change-btn" @click="changeFormat(index)" data-tooltip="可缩进方便查看、可修改格式小错误">修改格式</button>
                   <button class="action-btn preview-btn" @click="previewQuestion(index)" data-tooltip="预览后可出题">预览出题</button>
                   <button class="action-btn delete-btn" @click="confirmDelete(index)">删除</button>
                 </div>
@@ -284,22 +284,22 @@ export default {
       controller: null,
       questions:[
 
-          {
-            //用户输入
-            type: "MULTIPLE_CHOICE",
-            difficulty: "MEDIUM",
-            language: "",
-            discribe: "",
-            example: "",
-            //AI生成
-            isDeepThinking: true,
-            deepThinkingResponse: "这是深度思考的结果",
-            chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-            //其他参数
-            creatTime: "2023-10-01 11:00:00",
-            useTime:24,//深度思考时间
-            collapsedDeepThinking: false,
-          },
+          // {
+          //   //用户输入
+          //   type: "MULTIPLE_CHOICE",
+          //   difficulty: "MEDIUM",
+          //   language: "",
+          //   discribe: "",
+          //   example: "",
+          //   //AI生成
+          //   isDeepThinking: true,
+          //   deepThinkingResponse: "这是深度思考的结果",
+          //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+          //   //其他参数
+          //   creatTime: "2023-10-01 11:00:00",
+          //   useTime:24,//深度思考时间
+          //   collapsedDeepThinking: false,
+          // },
 
       ]
     }
