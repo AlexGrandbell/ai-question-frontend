@@ -1,24 +1,58 @@
-# ai-question-frontend
-你可能需要修改的地方： vue.config.js中后端的端口号
-## Project setup
-```
-npm install
-```
+# AI Question Frontend
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+本项目是一个基于 Vue.js 的 AI 出题与题库管理前端系统，旨在为用户提供便捷的编程题、单选题、多选题等多种题型的创建、编辑、预览及管理功能。项目结合了人工智能模型辅助生成题目内容，提升出题效率和质量，适用于教育培训、在线考试等场景。
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## 项目特点
 
-### Lints and fixes files
-```
-npm run lint
-```
+- 支持多题型（单选、多选、编程题）题目管理  
+- AI 辅助生成题目与答案  
+- 题目内容支持代码块展示与格式化换行  
+- 题库搜索、编辑、删除等完整功能  
+- 响应式界面，良好用户体验  
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 运行环境与依赖
+
+- **前端框架**：Vue 3  
+- **依赖管理**：npm  
+- **后端服务**：依赖提供题库数据的 REST API 接口  
+- **后端地址**：默认假设后端服务运行在 `http://localhost:8080`（可根据实际情况修改配置）
+
+## 本地运行方式
+
+1. 克隆本仓库并进入项目目录：
+   ```bash
+   git clone <your-repo-url>
+   cd ai-question-frontend
+   ```
+
+2. 安装依赖：
+   ```bash
+   npm install
+   ```
+
+3. 启动开发服务器：
+   ```bash
+   npm run serve
+   ```
+
+4. 默认情况下，前端应用会启动在 `http://localhost:3000`（具体端口请查看终端输出），并通过代理请求后端 API，确保你的后端服务在 `http://localhost:10100` 正常运行。
+
+## 端口与代理说明
+
+- **前端端口**：3000（默认，可在 `vue.config.js` 中修改）  
+- **后端服务端口**：10100，服务后端在另一个项目`https://github.com/NOVAZHOU2/aiGenerator` 
+- **后端AI端口**：5110，在另一个项目`https://github.com/AlexGrandbell/AIBack` ,使用的是DeepSeek API。需要购买API Key并配置到后端项目中。
+- **数据库**：使用MySQL数据库。具体数据库配置请参考后端项目文档。
+- 前端开发环境通过代理将请求转发到后端，避免跨域问题。
+
+## 后端服务说明
+
+- 后端项目需提供题库相关的 API，如获取题目列表、提交编辑内容等接口  
+- 本项目不包含后端代码，因为后端代码包含API Key内容，需根据实际情况自行实现或集成现有后端服务
+
+## 其他说明
+
+- 代码高亮、AI 题目生成等高级功能可根据需求扩展  
+- 如需打包部署，请执行 `npm run build`，将生成的静态文件部署到支持静态资源托管的服务器  
+
+---
