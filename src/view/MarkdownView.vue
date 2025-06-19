@@ -33,6 +33,9 @@ export default {
   line-height: 1.6;
   max-width: 1800px;
   margin: 0 auto;
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  border-radius: 10px;
 }
 .markdown-container h1,
 .markdown-container h2,
