@@ -24,7 +24,10 @@
       </div>
       <div class="dialog-content">
         <p><strong>题目类型：</strong>{{ typeLabel }}</p>
-        <p ><strong>题目内容：</strong>{{ question.content }}</p>
+        <div>
+          <strong>题目内容：</strong>
+          <pre class="code-block">{{ question.content }}</pre>
+        </div>
         <div v-if="question.type !== 'PROGRAMMING'">
           <p style="margin-bottom: 0"><strong>选项：</strong></p>
           <div v-for="opt in parsedOptions" :key="opt.key">{{ opt.key }}. {{ opt.text }}</div>
@@ -269,5 +272,14 @@ export default {
 
 .icon-button:active {
   transform: scale(0.95);
+}
+
+.code-block {
+  background-color: #f8f8f8;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>

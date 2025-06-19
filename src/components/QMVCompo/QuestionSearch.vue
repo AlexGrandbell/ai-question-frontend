@@ -93,7 +93,7 @@
                   class="input-tag tag-input"
                   v-model="newTag"
                   @keyup.enter="addTag"
-                  placeholder="例如 Java"
+                  placeholder="例如 Java，按回车添加"
               />
             </div>
             <img
