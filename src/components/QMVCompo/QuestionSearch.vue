@@ -357,7 +357,7 @@ export default {
   background: white;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 0px 10px;
+  padding: 0 10px;
   flex-grow: 1;
 }
 
