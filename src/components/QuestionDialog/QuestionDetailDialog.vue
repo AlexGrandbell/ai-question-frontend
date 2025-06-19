@@ -20,7 +20,7 @@
             aria-label="复制JSON格式"
           />
         </h2>
-        <div class="close-button" @click="$emit('close')"></div>
+        <div class="close-button" data-tooltip-left="关闭" @click="$emit('close')"></div>
       </div>
       <div class="dialog-content">
         <p><strong>题目类型：</strong>{{ typeLabel }}</p>

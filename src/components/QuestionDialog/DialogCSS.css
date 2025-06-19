@@ -85,24 +85,32 @@
     background-color: #1b73ba;
 }
 
-.close-button {
+.close-button,
+.disappear-button{
     position: absolute;
     top: 10px;
     right: 10px;
     width: 20px;
     height: 20px;
-    background-color: red;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.51);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s;
 }
+.close-button{
+    background-color: red;
+}
+.disappear-button{
+    background-color: #f1cd3d;
+}
 
-.close-button:hover {
+.close-button:hover,
+.disappear-button:hover{
     transform: scale(1.3);
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.28);
 }
-.close-button:active {
+.close-button:active,
+.disappear-button:active{
     transform: scale(0.95);
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.51);
 }
@@ -133,4 +141,28 @@ select {
 
 .form-row input[type="radio"] {
     width: auto;
+}
+
+[data-tooltip-left]::after {
+    content: attr(data-tooltip-left);
+    position: absolute;
+    top: 50%;
+    right: 120%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+[data-tooltip-left]:hover::after{
+    visibility: visible;
+    opacity: 1;
 }

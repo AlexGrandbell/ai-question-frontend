@@ -3,7 +3,7 @@
     <div class="dialog-box">
       <div class="dialog-header">
         <h2 class="header-title">编辑题目</h2>
-        <div class="close-button" @click="$emit('close')"></div>
+        <div class="close-button" data-tooltip-left="关闭" @click="$emit('close')"></div>
       </div>
 
       <div class="dialog-content">

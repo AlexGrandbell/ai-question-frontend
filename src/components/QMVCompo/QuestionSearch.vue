@@ -265,9 +265,9 @@ export default {
 }
 
 .rst-btn{
-  background-color: #c8c8c8;
+  background-color: #dddddd;
   font-size: 14px;
-  color: white;
+  color: black;
   border: none;
   padding: 6px 20px;
   border-radius: 6px;

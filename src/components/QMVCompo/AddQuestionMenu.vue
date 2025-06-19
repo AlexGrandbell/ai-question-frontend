@@ -17,6 +17,10 @@
             <img src="@/assets/icons/bulb.svg" class="magic-icon" alt="magic" />
             自主出题
           </button>
+          <button @click="select('json')">
+            <img src="@/assets/icons/json.svg" class="magic-icon" alt="magic" />
+            快速出题
+          </button>
         </div>
       </div>
     </transition>

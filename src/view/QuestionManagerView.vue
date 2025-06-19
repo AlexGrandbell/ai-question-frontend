@@ -57,7 +57,7 @@
     </transition>
     <transition name="fade-dialog">
       <QuestionAIAddDialog
-          v-if="showAIGenerateDialog"
+          v-show="showAIGenerateDialog"
           @close="showAIGenerateDialog = false"
           @info="showToast"
           @search="handleSearch"

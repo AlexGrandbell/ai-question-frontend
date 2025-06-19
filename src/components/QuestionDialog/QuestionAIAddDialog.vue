@@ -4,7 +4,7 @@
       <!-- 顶部栏 -->
       <div class="dialog-header">
         <h2 class="header-title">AI出题</h2>
-        <div class="close-button" @click="$emit('close')"></div>
+        <div class="disappear-button" data-tooltip-left="最小化 (保留对话)" @click="closeSelf"></div>
       </div>
 
       <!-- 主体部分，左右结构 -->
@@ -74,12 +74,12 @@
           </div>
 
           <!-- 深度思考 -->
-          <div class="form-row">
+          <div class="button-group">
             <button
               :class="['deep-think-btn', { active: useDeepThinking }]"
               @click="useDeepThinking = !useDeepThinking"
               type="button"
-              data-tooltip="使用深度思考"
+              :data-tooltip="useDeepThinking ? '已启用深度思考' : '点击启用使用深度思考'"
             >
               <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -99,11 +99,8 @@
 
 
           <!-- 按钮 -->
-          <div class="form-row button-group">
-            <button class="confirm" @click="handleGenerate" style="margin-left: 10px" :disabled="isCurrentGenerating">生成</button>
-          </div>
-          <div class="form-row button-group">
-            <button class="confirm" @click="handleStop" style="margin-left: 10px">结束</button>
+          <div class="button-group">
+            <button class="confirm" data-tooltip="点击开始生成题目" @click="handleGenerate" style="align-items: center;" :disabled="isCurrentGenerating">生成</button>
           </div>
         </div>
 
@@ -164,7 +161,8 @@
                 <div class="param" v-if="q.discribe"><strong>描述:</strong> {{ q.discribe }}</div>
                 <div class="param" v-if="q.example"><strong>样例:</strong> {{ q.example }}</div>
                 <div class="bubble-actions">
-                  <button class="action-btn preview-btn" @click="previewQuestion(index)">预览</button>
+                  <button class="action-btn change-btn" @click="changeFormat(index)" data-tooltip="可缩进、可修改">修改格式</button>
+                  <button class="action-btn preview-btn" @click="previewQuestion(index)" data-tooltip="预览后可出题">预览出题</button>
                   <button class="action-btn delete-btn" @click="confirmDelete(index)">删除</button>
                 </div>
               </div>
@@ -229,6 +227,15 @@
           @created="handleCreatedQuestion"
       />
     </transition>
+    <transition name="fade-dialog">
+      <QuestionFormatEditDialog
+          v-if="showFormatDialog"
+          :text="editJSON"
+          @close="showFormatDialog = false"
+          @info="showToast"
+          @changeText="handleEditJson"
+      />
+    </transition>
   </div>
 </template>
 
@@ -236,12 +243,15 @@
 import './DialogCSS.css'
 import './EditCSS.css'
 import QuestionAIEditDialog from "@/components/QuestionDialog/QuestionAIEditDialog.vue";
-// import {quizPrompt} from "@/utils/QuizPrompt";
+import QuestionFormatEditDialog from "@/components/QuestionDialog/QuestionFormatEditDialog.vue";
+import {quizPrompt} from "@/utils/QuizPrompt";
+// import axios from 'axios';
 
 export default {
   name: 'QuestionAIAddDialog',
   components: {
-    QuestionAIEditDialog
+    QuestionAIEditDialog,
+    QuestionFormatEditDialog
   },
   data() {
     return {
@@ -255,7 +265,10 @@ export default {
       newTag: '',
       useDeepThinking: false,
       showEditAiGenerateDialog: false,
+      showFormatDialog: false,
       currentEditAIQuestion: null,
+      editJSON:null,
+      editJSONindex: null,
       currentGeneratingQuestion: {
         type: "",
         difficulty: "",
@@ -268,93 +281,75 @@ export default {
         creatTime: "",
       },
       isCurrentGenerating: false,
-      startTime: null,
+      controller: null,
       questions:[
-        // {
-        //   //用户输入
-        //   type: "MULTIPLE_CHOICE",
-        //   difficulty: "MEDIUM",
-        //   language: "",
-        //   discribe: "",
-        //   example: "",
-        //   //AI生成
-        //   isDeepThinking: true,
-        //   deepThinkingResponse: "这是深度思考的结果",
-        //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-        //   //其他参数
-        //   creatTime: "2023-10-01 11:00:00",
-        //   useTime:24,//深度思考时间
-        //   collapsedDeepThinking: false,
-        // },
-        // {
-        //   //用户输入
-        //   type: "SINGLE_CHOICE",
-        //   difficulty: "EASY",
-        //   language: "java,go,c",
-        //   discribe: "这是一段描述",
-        //   example: "设置一个例子",
-        //   //AI生成
-        //   isDeepThinking: false,
-        //   deepThinkingResponse: "",
-        //   chatResponse: '{"content": "以下哪个选项是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"以上都是"}, "answer": "D"}',
-        //   //其他参数
-        //   creatTime: "2023-10-01 12:00:00",
-        //   useTime:0,
-        //   collapsedDeepThinking: false,
-        // },
-        // {
-        //   //用户输入
-        //   type: "MULTIPLE_CHOICE",
-        //   difficulty: "EASY",
-        //   language: "java,go,c",
-        //   discribe: "这是一段描述",
-        //   example: "设置一个例子",
-        //   //AI生成
-        //   isDeepThinking: false,
-        //   deepThinkingResponse: "",
-        //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-        //   //其他参数
-        //   creatTime: "2023-10-01 12:00:00",
-        //   useTime:0,
-        //   collapsedDeepThinking: false,
-        // },
-        // {
-        //   //用户输入
-        //   type: "PROGRAMMING",
-        //   difficulty: "HARD",
-        //   language: "java,go,c",
-        //   discribe: "这是一段描述",
-        //   example: "设置一个例子",
-        //   //AI生成
-        //   isDeepThinking: false,
-        //   deepThinkingResponse: "",
-        //   chatResponse: '{"content": "请编写一个函数，计算两个数的和。"}',
-        //   //其他参数
-        //   creatTime: "2023-10-01 12:00:00",
-        //   useTime:0,
-        //   collapsedDeepThinking: false,
-        // },
-        // {
-        //   //用户输入
-        //   type: "PROGRAMMING",
-        //   difficulty: "HARD",
-        //   language: "java,go,c",
-        //   discribe: "这是一段描述",
-        //   example: "设置一个例子",
-        //   //AI生成
-        //   isDeepThinking: false,
-        //   deepThinkingResponse: "",
-        //   chatResponse: '{"content": "请编写一个函数，计算两个数的和。"',
-        //   //其他参数
-        //   creatTime: "2023-10-01 12:00:00",
-        //   useTime:0,
-        //   collapsedDeepThinking: false,
-        // }
+
+          {
+            //用户输入
+            type: "MULTIPLE_CHOICE",
+            difficulty: "MEDIUM",
+            language: "",
+            discribe: "",
+            example: "",
+            //AI生成
+            isDeepThinking: true,
+            deepThinkingResponse: "这是深度思考的结果",
+            chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+            //其他参数
+            creatTime: "2023-10-01 11:00:00",
+            useTime:24,//深度思考时间
+            collapsedDeepThinking: false,
+          },
+
       ]
     }
   },
   methods: {
-    handleGenerate() {
+    bulidPrompt(){
+      let msg = []
+      msg.push({role: 'system', content: quizPrompt.systemPromptHead+quizPrompt.systemPromptTail})
+      let userMsg = ""
+      if (this.form.type === 'SINGLE_CHOICE') {
+        userMsg = quizPrompt.typeHead.single
+      } else if (this.form.type === 'MULTIPLE_CHOICE') {
+        userMsg = quizPrompt.typeHead.multiple
+      } else {
+        userMsg = quizPrompt.typeHead.programming
+      }
+      if (this.form.difficulty === 'EASY') {
+        userMsg += quizPrompt.difficulty.easy
+      } else if (this.form.difficulty === 'MEDIUM') {
+        userMsg += quizPrompt.difficulty.medium
+      } else {
+        msg.push({role: 'user', content: quizPrompt.difficulty.hard})
+        userMsg += quizPrompt.difficulty.hard
+      }
+      if(this.languageTags.length>0){
+        userMsg += quizPrompt.language.haveLanguage + this.languageTags.join(',')
+      }else{
+        userMsg += quizPrompt.language.noLanguage
+      }
+      if (this.form.discribe && this.form.discribe.trim() !== ''){
+        userMsg += quizPrompt.describe.haveDescribe + this.form.discribe.trim()
+      } else {
+        userMsg += quizPrompt.describe.noDescribe
+      }
+      if (this.form.example && this.form.example.trim() !== ''){
+        userMsg += quizPrompt.example.haveExample + this.form.example.trim()
+      } else {
+        userMsg += quizPrompt.example.noExample
+      }
+      if (this.form.type === 'SINGLE_CHOICE') {
+        userMsg += quizPrompt.typeTail.single
+      } else if (this.form.type === 'MULTIPLE_CHOICE') {
+        userMsg += quizPrompt.typeTail.multiple
+      } else{
+        userMsg += quizPrompt.typeTail.programming
+      }
+      msg.push({role: 'user', content: userMsg})
+      return msg
+    },
+    async handleGenerate() {
       if (!this.form.type || !this.form.difficulty) {
         this.$emit('info', '题型与难度为必填项', 'warning')
         return
@@ -363,31 +358,110 @@ export default {
         ...this.form,
         language: this.languageTags.join(','),
         isDeepThinking: this.useDeepThinking,
-        deepThinkingResponse: this.useDeepThinking ? '这是深度思考的结果' : '',
-        chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+        deepThinkingResponse: '',
+        chatResponse: '',
         creatTime: new Date().toLocaleString(),
       }
-      this.startTime = Date.now()
+
+
+      this.controller = new AbortController();
+      const signal = this.controller.signal;
+      let startTime = performance.now();
+      let endTime = performance.now();
+
       this.isCurrentGenerating = true
-      // this.scrollToBottom();
-    },
-    handleStop() {
-      if (this.isCurrentGenerating) {
-        const endTime = Date.now()
-        const useTime = this.currentGeneratingQuestion.isDeepThinking
-          ? Math.floor((endTime - this.startTime) / 1000)
-          : 0
-
-        this.questions.push({
-          ...this.currentGeneratingQuestion,
-          useTime,
-          collapsedDeepThinking: false
-        })
-
-        this.isCurrentGenerating = false
-        this.$emit('info', '生成已结束', 'success')
-      }
       this.scrollToBottom();
+      try {
+        const response = await fetch("http://localhost:5110/chat", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: this.useDeepThinking ? "deepseek-reasoner" : "deepseek-chat",
+            messages: this.bulidPrompt(),
+            frequency_penalty: 1,
+            stream: true,
+          }),
+          signal:signal
+        });
+
+
+        if (!response.ok) {
+          this.$emit('info', '请求过于频繁，请稍后再试', 'error');
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let reasonResult = '';
+        let contentResult = '';
+
+        let isStart = false;
+        let isFinishThink = false;
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          this.scrollToBottom();
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n').filter(line => line.trim() !== '');
+          for (const line of lines) {
+            let message = line.replace(/^data:\s*/, '');
+            if (!message || message === '[DONE]') {
+              this.$emit('info', '出题结束', 'success');
+              break;
+            } else if (message === ': keep-alive') {
+              this.$emit('info', '请稍等，出题还在继续，并未中断', 'wrong');
+              break
+            }
+
+            try {
+              const parsed = JSON.parse(message);
+
+              if (parsed.choices && parsed.choices[0].delta) {
+                if (parsed.choices[0].delta.content) {
+                  if (!isFinishThink) {
+                    isFinishThink = true;
+                    endTime = performance.now();
+                  }
+                  contentResult += parsed.choices[0].delta.content;
+                  this.currentGeneratingQuestion.chatResponse = contentResult;
+                }
+                if (parsed.choices[0].delta.reasoning_content) {
+                  if (!isStart) {
+                    isStart = true;
+                    startTime = performance.now();
+                  }
+                  reasonResult += parsed.choices[0].delta.reasoning_content;
+                  this.currentGeneratingQuestion.deepThinkingResponse = reasonResult;
+                  this.currentGeneratingQuestion.isDeepThinking = true;
+                }
+              }
+
+            } catch (e) {
+              console.log('解析JSON失败:', e);
+            }
+          }
+        }
+        this.$emit('info', '生成已结束', 'success')
+        //循环结束
+      }catch (error) {
+        this.$emit('info', '无法连接服务器，请检查后重试', 'error');
+      } finally {
+         if (this.controller) {
+          this.controller = null; // 确保只有在controller存在时才清空它
+          }
+          const totalTime = Math.round((endTime - startTime) / 1000); // 总传输时间（秒）
+          console.log(totalTime)
+          this.currentGeneratingQuestion.useTime = this.useDeepThinking ? totalTime : 0;
+          this.questions.push({
+            ...this.currentGeneratingQuestion,
+            collapsedDeepThinking: false
+          })
+          this.isCurrentGenerating = false
+          this.scrollToBottom();
+      }
     },
     addTag() {
       const tag = this.newTag.trim();
@@ -444,7 +518,7 @@ export default {
       try {
         parsed = JSON.parse(q.chatResponse);
       } catch (e) {
-        this.$emit('info', '抱歉，生成结果不佳，请删除重试', 'warning');
+        this.$emit('info', '抱歉，生成结果不佳，请尝试修改格式', 'warning');
         return;
       }
       this.currentEditAIQuestion = {
@@ -457,6 +531,25 @@ export default {
       };
       this.showEditAiGenerateDialog = true;
     },
+    changeFormat(index){
+      this.editJSONindex = index;
+      this.editJSON = this.questions[index].chatResponse;
+      this.showFormatDialog = true;
+    },
+    handleEditJson(newJson) {
+      try {
+        JSON.parse(newJson);
+        this.questions[this.editJSONindex].chatResponse = JSON.stringify(JSON.parse(newJson), null, 4);
+        this.$emit('info', '格式修改成功', 'success');
+      } catch (e) {
+        this.questions[this.editJSONindex].chatResponse = newJson;
+        this.$emit('info', '已修改，但格式修改失败，请检查', 'warning');
+        return;
+      }
+      this.showFormatDialog = false;
+      this.editJSON = null;
+      this.editJSONindex = null;
+    },
     scrollToBottom() {
       this.$nextTick(() => {
         const panel = this.$el.querySelector('.right-panel');
@@ -464,6 +557,9 @@ export default {
           panel.scrollTop = panel.scrollHeight;
         }
       });
+    },
+    closeSelf(){
+      this.$emit('close')
     }
   }
 }
@@ -510,6 +606,11 @@ export default {
   margin-top: auto;
   display: flex;
   gap: 12px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: nowrap;
 }
 
 button.secondary {
@@ -538,7 +639,6 @@ button:disabled {
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
-  margin-left: 10px;
 }
 .deep-think-btn.active {
   background-color: #4aa6ef;
@@ -580,8 +680,10 @@ button:disabled {
   z-index: 1000;
 }
 
+
+
 /* 悬停时显示 */
-[data-tooltip]:hover::after {
+[data-tooltip]:hover::after{
   visibility: visible;
   opacity: 1;
 }
@@ -737,7 +839,13 @@ button:disabled {
   border: none;
   transition: all 0.2s;
 }
-
+.change-btn{
+  background-color: #f0f0f0;
+  color: #333;
+}
+.change-btn:hover {
+  background-color: #d9d9d9;
+}
 .preview-btn {
   background-color: #eee;
   color: #333;
