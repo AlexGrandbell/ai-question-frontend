@@ -372,7 +372,7 @@ export default {
       this.isCurrentGenerating = true
       this.scrollToBottom();
       try {
-        const response = await fetch("http://localhost:5110/chat", {
+        const response = await fetch("http://localhost:5110/chat/ai", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
