@@ -11,6 +11,7 @@
             class="json-editor"
             spellcheck="false"
             maxlength="1000"
+            placeholder="请输入内容，最大长度 1000 字符。"
         ></textarea>
         <div class="char-counter">{{ charCount }}/1000</div>
       </div>
@@ -74,6 +75,7 @@ export default {
   width: 100%;
   height: 400px;
   max-height: 50vh;
+  min-height: 10vh;
   font-family: monospace;
   font-size: 14px;
   padding: 10px;

@@ -63,6 +63,14 @@
           @search="handleSearch"
       />
     </transition>
+    <transition name="fade-dialog">
+      <QuestionFastDialog
+          v-if="showFastDialog"
+          @close="showFastDialog = false"
+          @info="showToast"
+          @created="handleCreatedQuestion"
+      />
+    </transition>
     <ToastMassage ref="toast" />
 
   </div>
@@ -77,6 +85,7 @@ import ToastMassage from "@/components/ToastMassage.vue";
 import QuestionSelfAddDialog from "@/components/QuestionDialog/QuestionSelfAddDialog.vue";
 import QuestionEditDialog from "@/components/QuestionDialog/QuestionEditDialog.vue";
 import QuestionAIAddDialog from "@/components/QuestionDialog/QuestionAIAddDialog.vue";
+import QuestionFastDialog from "@/components/QuestionDialog/QuestionFastDialog.vue";
 import axios from "axios";
 
 export default {
@@ -89,7 +98,8 @@ export default {
     ToastMassage,
     QuestionSelfAddDialog,
     QuestionEditDialog,
-    QuestionAIAddDialog
+    QuestionAIAddDialog,
+    QuestionFastDialog
   },
   data() {
     return {
@@ -118,6 +128,7 @@ export default {
       showSelfAddDialog: false,
       currentEditQuestion:null,
       showEditDialog: false,
+      showFastDialog: false,
       showAIGenerateDialog: false
     }
   },
@@ -241,10 +252,13 @@ export default {
         this.showSelfAddDialog = true
       }else if (type === 'AI') {
         this.showAIGenerateDialog = true
+      }else if (type === 'json') {
+        this.showFastDialog = true
       }
     },
     handleCreatedQuestion() {
       this.showSelfAddDialog = false
+      this.showFastDialog = false
       this.$refs.toast.addToast('创建成功', 'success')
       this.handleSearch()
     },
