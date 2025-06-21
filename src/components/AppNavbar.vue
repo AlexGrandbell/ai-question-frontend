@@ -17,8 +17,10 @@ import { computed } from 'vue';
 const user = getUserInfo();
 const greeting = computed(() => {
   const hour = new Date().getHours();
+  if (hour < 4) return '早点休息';
   if (hour < 11) return '上午好';
-  else if (hour < 14) return '中午好';
+  else if (hour < 13) return '中午好';
+  else if (hour < 18) return '下午好';
   else return '晚上好';
 });
 </script>

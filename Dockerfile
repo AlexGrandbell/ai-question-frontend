@@ -13,5 +13,4 @@ COPY dist/ /usr/share/nginx/html/
 # 暴露 80 端口
 EXPOSE 80
 
-# 启动 nginx 服务
 CMD ["nginx", "-g", "daemon off;"]
