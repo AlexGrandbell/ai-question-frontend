@@ -333,23 +333,23 @@ export default {
       controller: null,
       questions:[
 
-          {
-            //用户输入
-            type: "MULTIPLE_CHOICE",
-            difficulty: "MEDIUM",
-            language: "",
-            discribe: "",
-            example: "",
-            //AI生成
-            isDeepThinking: true,
-            deepThinkingResponse: "这是深度思考的结果",
-            chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
-            //其他参数
-            creatTime: "2023-10-01 11:00:00",
-            useTime:24,//深度思考时间
-            collapsedDeepThinking: false,
-            collapsedAll: false,
-          },
+          // {
+          //   //用户输入
+          //   type: "MULTIPLE_CHOICE",
+          //   difficulty: "MEDIUM",
+          //   language: "",
+          //   discribe: "",
+          //   example: "",
+          //   //AI生成
+          //   isDeepThinking: true,
+          //   deepThinkingResponse: "这是深度思考的结果",
+          //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer":',
+          //   //其他参数
+          //   creatTime: "2023-10-01 11:00:00",
+          //   useTime:24,//深度思考时间
+          //   collapsedDeepThinking: false,
+          //   collapsedAll: false,
+          // },
 
       ]
     }

@@ -46,7 +46,7 @@
                   </div>
                   <div>
                     <div style="margin: 8px 0; height: 2px; background: linear-gradient(to right, #5b9df9, #d0e6ff);"></div>
-                    <div>{{ chat.chatResponse }}</div>
+                    <div class="markdown-content" v-html="renderMarkdown(chat.chatResponse)"></div>
                   </div>
                   <button
                     class="copy-button"
@@ -74,7 +74,7 @@
             </div>
             <div>
               <div style="margin: 8px 0; height: 2px; background: linear-gradient(to right, #5b9df9, #d0e6ff);"></div>
-              <div>{{ currentResponse.chatResponse }}</div>
+              <div class="markdown-content" v-html="renderMarkdown(currentResponse.chatResponse)"></div>
             </div>
           </div>
         </div>
@@ -121,6 +121,8 @@ import './EditCSS.css';
 import './TagCSS.css'
 import './TooltipCSS.css'
 import {detailPrompt} from "@/utils/DetailPrompt";
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'QuestionAIDetailDialog',
@@ -153,7 +155,15 @@ export default {
         //   role: 'assistant',
         //   isDeepThinking: false,
         //   deepThinkingResponse: "这是深度思考的结果",
-        //   chatResponse: '{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}',
+        //   chatResponse: '你好！很高兴见到你。你之前提到打算继续深入那道计算机网络题目的细节，我很乐意帮忙修改或优化它。目前，题目是：{"content": "以下哪些是计算机网络的基本组成部分？", "options": {"A":"服务器","B":"客户端","C":"网络设备","D":"发电机"}, "answer": "A,B,C"}。\n' +
+        //       '\n' +
+        //       '为了确保修改更符合你的需求，能具体告诉我你想调整哪些部分吗？比如：\n' +
+        //       '- 题目内容是否需要更精确或增加深度（例如，聚焦于特定协议或架构）？\n' +
+        //       '- 选项是否合理（例如，选项D"发电机"可能不太合适，因为它是物理基础设施，不属于核心组成部分）？\n' +
+        //       '- 答案设置是否需要调整（例如，增加更多选项或改变答案组合）？\n' +
+        //       '- 或者有其他特定要求？\n' +
+        //       '\n' +
+        //       '请随意分享你的想法，我会根据你的反馈进行专业修改！ 😊',
         //   //其他参数
         //   creatTime: "2023-10-01 11:00:00",
         //   useTime:24,
@@ -174,6 +184,9 @@ export default {
     }
   },
   methods:{
+    renderMarkdown(text) {
+      return DOMPurify.sanitize(marked(text));
+    },
     bulidPrompt(){
       let msg = []
       let systemPrompt = detailPrompt.systemPromptHead+detailPrompt.systemPromptTail;
@@ -412,14 +425,16 @@ export default {
 }
 
 .user-bubble {
-  background-color: #e0f7fa;
+  background-color: #f0f6ff;
   align-self: flex-end;
+  border: 1px solid #ddd;
   text-align: left;
 }
 
 .ai-bubble {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   align-self: flex-start;
+  border: 1px solid #ddd;
   text-align: left;
 }
 
@@ -432,7 +447,7 @@ export default {
 
 .input-box {
   width: 100%;
-  height: 80px;
+  height: 135px;
   padding: 8px;
   font-size: 18px;
   margin-bottom: 8px;
@@ -566,5 +581,29 @@ img {
 
 }
 
+
+
+.markdown-content {
+  overflow-x: visible;
+  white-space: normal;
+}
+
+.markdown-content p {
+  margin: 0;
+}
+
+.markdown-content li {
+  margin: 0;
+}
+
+.markdown-content pre {
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+.markdown-content code {
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+}
 </style>
 
