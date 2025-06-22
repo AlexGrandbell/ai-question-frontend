@@ -46,7 +46,15 @@
                      @keyup.enter="addTag"
                      :placeholder="`剩余 ${5 - languageTags.length} 个，回车添加`"
               />
+              <img
+                  src="@/assets/icons/cross.svg"
+                  class="clear-icon"
+                  v-if="languageTags.length > 0"
+                  @click="clearTags"
+                  alt="clear"
+              />
             </div>
+
           </div>
 
           <!-- 描述题目 -->
@@ -119,10 +127,6 @@
               </button>
             </div>
           </div>
-
-
-
-
 
           <!-- 按钮 -->
           <div class="button-group">
@@ -335,6 +339,10 @@ export default {
     }
   },
   methods: {
+    clearTags() {
+      this.languageTags = [];
+      this.newTag = '';
+    },
     bulidPrompt(){
       let msg = []
       msg.push({role: 'system', content: quizPrompt.systemPromptHead+quizPrompt.systemPromptTail})
@@ -933,5 +941,23 @@ button:disabled {
   to {
     transform: rotate(720deg);
   }
+}
+
+.clear-icon {
+  width: 30px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.clear-icon:hover {
+  transform: scale(1.2);
+}
+
+.clear-icon:active {
+  transform: scale(0.95);
 }
 </style>

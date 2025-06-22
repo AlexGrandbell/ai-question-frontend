@@ -22,6 +22,7 @@
     font-weight: bold;
 }
 .tag-input-container .tag-input {
+    margin-left: 3px;
     flex: 1;
     min-width: 120px;
     border: none;

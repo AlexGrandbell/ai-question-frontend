@@ -15,16 +15,15 @@
 
       <div class="search-box">
         <div class="input-wrapper">
-          <img src="../../assets/icons/search.svg" alt="search" />
+          <img src="@/assets/icons/search.svg" alt="search" />
           <input
             type="text"
             v-model="localFilter.keyword"
             placeholder="输入关键字搜索题干, 按回车搜索"
-
             @keyup.enter="onSearch"
           />
           <img
-            src="../../assets/icons/cross.svg"
+            src="@/assets/icons/cross.svg"
             class="clear-icon"
             v-if="localFilter.keyword"
             @click="localFilter.keyword = ''"
@@ -108,14 +107,15 @@
                   @keyup.enter="addTag"
                   placeholder="例如 Java，按回车添加"
               />
+              <img
+                  src="@/assets/icons/cross.svg"
+                  class="clear-icon"
+                  v-if="languageTags.length > 0"
+                  @click="clearTags"
+                  alt="clear"
+              />
             </div>
-            <img
-              src="../../assets/icons/cross.svg"
-              class="clear-icon"
-              v-if="languageTags.length > 0"
-              @click="clearTags"
-              alt="clear"
-            />
+
           </div>
         </div>
       </div>
