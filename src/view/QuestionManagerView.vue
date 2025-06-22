@@ -111,7 +111,8 @@ export default {
         page: 0,
         size: 10,
         sortBy: 'createdAt',
-        direction: 'ASC'
+        direction: 'ASC',
+        uerId:''
       },
       questions: [],
       selectedIds: [],
@@ -152,7 +153,8 @@ export default {
             type: this.filter.type,
             keyword: this.filter.keyword,
             language: this.filter.language,
-            difficulty: this.filter.difficulty
+            difficulty: this.filter.difficulty,
+            userId: this.filter.userId
           }
         })
         this.questions = res.data.content

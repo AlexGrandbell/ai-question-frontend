@@ -30,6 +30,11 @@
       </form>
     </div>
 
+    <div class="quit-system">
+      <h3 style="margin-bottom: 0">退出登录</h3>
+      <button @click="handleLogout">退出登录</button>
+    </div>
+
     <ToastMassage ref="toast" />
   </div>
 </template>
@@ -39,6 +44,7 @@ import { ref } from "vue";
 import axios from "axios";
 import { getUserInfo } from "@/utils/auth";
 import ToastMassage from "@/components/ToastMassage.vue";
+import { useRouter } from "vue-router";
 
 export default {
   name: "SelfInfoView",
@@ -47,6 +53,7 @@ export default {
   },
   setup() {
     const user = getUserInfo();
+    const router = useRouter();
 
     const toast = ref(null);
     const oldPassword = ref("");
@@ -77,6 +84,11 @@ export default {
       }
     };
 
+    const handleLogout = () => {
+      localStorage.removeItem('user'); // 清除用户信息
+      router.push('/login'); // 跳转到登录页
+    };
+
     return {
       user,
       oldPassword,
@@ -84,6 +96,7 @@ export default {
       confirmPassword,
       handleChangePassword,
       toast,
+      handleLogout,
     };
   },
 };
@@ -134,4 +147,22 @@ export default {
 .change-password button:hover {
   background-color: #0056b3;
 }
+
+.quit-system button {
+  width: 100%;
+  padding: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.quit-system button:hover {
+  background-color: #b02a37;
+}
+
 </style>

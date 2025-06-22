@@ -393,12 +393,10 @@ export default {
         creatTime: new Date().toLocaleString(),
       }
 
-
       this.controller = new AbortController();
       const signal = this.controller.signal;
       let startTime = performance.now();
       let endTime = performance.now();
-
       this.isCurrentGenerating = true
       this.scrollToBottom();
       try {
@@ -475,14 +473,14 @@ export default {
           }
         }
         this.$emit('info', '生成已结束', 'success')
-        //循环结束
+
       }catch (error) {
         this.$emit('info', '无法连接服务器，请检查后重试', 'error');
       } finally {
          if (this.controller) {
-          this.controller = null; // 确保只有在controller存在时才清空它
+          this.controller = null;
           }
-          const totalTime = Math.round((endTime - startTime) / 1000); // 总传输时间（秒）
+          const totalTime = Math.round((endTime - startTime) / 1000);
           console.log(totalTime)
           this.currentGeneratingQuestion.useTime = this.useDeepThinking ? totalTime : 0;
           this.questions.push({

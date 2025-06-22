@@ -49,11 +49,24 @@
       >
         <div class="more-filters">
           <div class="filter-line">
-            <span class="label">难度：</span>
+            <span class="label">题目难度：</span>
             <div class="button-group rounded-group">
               <button v-for="d in difficultyOptions" :key="d.value"
                 :class="['group-button', { active: localFilter.difficulty === d.value }]"
                 @click="localFilter.difficulty = d.value">{{ d.label }}</button>
+            </div>
+          </div>
+          <div class="filter-line">
+            <span class="label">题目归属：</span>
+            <div class="button-group rounded-group">
+              <button
+                :class="['group-button', { active: !localFilter.userOnly }]"
+                @click="localFilter.userOnly = false"
+              >全部</button>
+              <button
+                :class="['group-button', { active: localFilter.userOnly }]"
+                @click="localFilter.userOnly = true"
+              >仅自己的题目</button>
             </div>
           </div>
           <div class="filter-line">
@@ -78,7 +91,7 @@
             </div>
           </div>
           <div class="filter-line">
-            <span class="label">考点：</span>
+            <span class="label">考点标签：</span>
             <div class="tag-input-container">
               <span
                   class="tag"
@@ -111,6 +124,7 @@
 </template>
 
 <script>
+import { getUserInfo } from '@/utils/auth';
 import '../QuestionDialog/TagCSS.css';
 export default {
   name: 'QuestionSearch',
@@ -122,7 +136,9 @@ export default {
         difficulty: '',
         sortBy: 'createdAt',
         direction: 'ASC',
-        language: ''
+        language: '',
+        userId : null,
+        userOnly: false,
       },
       expanded: false,
       newTag: '',
@@ -161,9 +177,10 @@ export default {
       this.localFilter.type = value
     },
     onSearch() {
-      const newFilter = {...this.localFilter};
+      const newFilter = { ...this.localFilter };
+      newFilter.userId = newFilter.userOnly ? getUserInfo().id : null;
       this.$emit('update:filter', newFilter);
-      this.$emit('search')
+      this.$emit('search');
     },
     onReset() {
       this.localFilter = {
@@ -172,7 +189,9 @@ export default {
         difficulty: '',
         sortBy: 'createdAt',
         direction: 'ASC',
-        language: ''
+        language: '',
+        userId: '',
+        userOnly: false,
       };
       this.newTag = '';
       this.$emit('info', '已重置搜索条件', 'success')
@@ -305,6 +324,14 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* 复选框和“仅查看自己的题目”文字在同一行 */
+.filter-line label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .button-group {

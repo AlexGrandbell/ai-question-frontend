@@ -6,6 +6,7 @@
     </div>
     <div class="navbar-right">
       <span class="greeting">{{ greeting }}, {{ user.username }}</span>
+      <img src="@/assets/icons/power.svg" alt="logout" class="logout-icon" @click="handleLogout" />
     </div>
   </div>
 </template>
@@ -13,6 +14,7 @@
 <script setup>
 import { getUserInfo } from '@/utils/auth';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const user = getUserInfo();
 const greeting = computed(() => {
@@ -23,6 +25,12 @@ const greeting = computed(() => {
   else if (hour < 18) return '下午好';
   else return '晚上好';
 });
+
+const router = useRouter();
+const handleLogout = () => {
+  localStorage.removeItem('user');
+  router.push('/login');
+};
 </script>
 
 <style scoped>
@@ -56,11 +64,23 @@ const greeting = computed(() => {
   pointer-events: none;
 }
 .navbar-right {
+  display: flex;
+  align-items: center;
   margin-left: auto;
   user-select: none;
 }
 .greeting {
   font-size: 18px;
   color: #ffffff;
+}
+.logout-icon {
+  width: 22px;
+  height: 22px;
+  margin-left: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.logout-icon:hover {
+  opacity: 0.7;
 }
 </style>
