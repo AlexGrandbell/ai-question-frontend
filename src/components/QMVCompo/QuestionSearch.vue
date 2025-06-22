@@ -131,6 +131,7 @@ export default {
   data() {
     return {
       localFilter: {
+        page:'0',
         type: '',
         keyword: '',
         difficulty: '',
