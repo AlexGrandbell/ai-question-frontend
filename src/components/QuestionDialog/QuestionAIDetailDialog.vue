@@ -151,26 +151,26 @@ export default {
         //   creatTime: "2023-10-01 11:00:00",
         //   useTime:24,
         // },
-        {
-          role: 'assistant',
-          isDeepThinking: false,
-          deepThinkingResponse: "这是深度思考的结果",
-          chatResponse: '```json\n' +
-              '{\n' +
-              '    "content": "在JavaScript中，以下关于变量提升(Hoisting)和暂时性死区(Temporal Dead Zone)的描述，哪个是正确的？",\n' +
-              '    "options": {\n' +
-              '        "A": "使用let声明的变量存在变量提升，但不会进入暂时性死区",\n' +
-              '        "B": "使用var声明的变量不存在变量提升，但会进入暂时性死区",\n' +
-              '        "C": "使用const声明的变量既存在变量提升也会进入暂时性死区",\n' +
-              '        "D": "函数声明不存在变量提升，但函数表达式会进入暂时性死区"\n' +
-              '    },\n' +
-              '    "answer": ""\n' +
-              '}\n' +
-              '```',
-          //其他参数
-          creatTime: "2023-10-01 11:00:00",
-          useTime:24,
-        },
+        // {
+        //   role: 'assistant',
+        //   isDeepThinking: false,
+        //   deepThinkingResponse: "这是深度思考的结果",
+        //   chatResponse: '```json\n' +
+        //       '{\n' +
+        //       '    "content": "在JavaScript中，以下关于变量提升(Hoisting)和暂时性死区(Temporal Dead Zone)的描述，哪个是正确的？",\n' +
+        //       '    "options": {\n' +
+        //       '        "A": "使用let声明的变量存在变量提升，但不会进入暂时性死区",\n' +
+        //       '        "B": "使用var声明的变量不存在变量提升，但会进入暂时性死区",\n' +
+        //       '        "C": "使用const声明的变量既存在变量提升也会进入暂时性死区",\n' +
+        //       '        "D": "函数声明不存在变量提升，但函数表达式会进入暂时性死区"\n' +
+        //       '    },\n' +
+        //       '    "answer": ""\n' +
+        //       '}\n' +
+        //       '```',
+        //   //其他参数
+        //   creatTime: "2023-10-01 11:00:00",
+        //   useTime:24,
+        // },
 
       ],
       currentResponse: {
