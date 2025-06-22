@@ -185,6 +185,7 @@ export default {
     },
     onReset() {
       this.localFilter = {
+        page:'0',
         type: '',
         keyword: '',
         difficulty: '',
