@@ -204,6 +204,27 @@ export default {
   -webkit-user-drag: none;
 }
 
+.icon-button {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.icon-button:hover {
+  transform: scale(1.2);
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
 .answer-tag {
   display: inline-block;
   padding: 2px 8px;

@@ -195,6 +195,7 @@
                 <div class="param" v-if="q.example"><strong>样例:</strong> {{ q.example }}</div>
                 <div class="bubble-actions">
                   <button class="action-btn change-btn" @click="changeFormat(index)" data-tooltip="可缩进方便查看、可修改格式小错误">修改格式</button>
+                  <button class="action-btn detail-btn" @click="detailFormat(index)" data-tooltip="开启小窗，与AI讨论更多有关该题的细节">讨论细节</button>
                   <button class="action-btn preview-btn" @click="previewQuestion(index)" data-tooltip="预览后可出题">预览出题</button>
                   <button class="action-btn delete-btn" @click="confirmDelete(index)">删除</button>
                 </div>
@@ -269,22 +270,34 @@
           @changeText="handleEditJson"
       />
     </transition>
+    <transition name="fade-dialog">
+      <QuestionAIDetailDialog
+          v-if="showDetailDialog"
+          :question="detailJSON"
+          @close="showDetailDialog = false"
+          @info="showToast"
+      />
+    </transition>
   </div>
 </template>
 
 <script>
 import './DialogCSS.css'
 import './EditCSS.css'
+import './TooltipCSS.css'
 import QuestionAIEditDialog from "@/components/QuestionDialog/QuestionAIEditDialog.vue";
 import QuestionFormatEditDialog from "@/components/QuestionDialog/QuestionFormatEditDialog.vue";
+import QuestionAIDetailDialog from "@/components/QuestionDialog/QuestionAIDetailDialog.vue";
 import {quizPrompt} from "@/utils/QuizPrompt";
+
 // import axios from 'axios';
 
 export default {
   name: 'QuestionAIAddDialog',
   components: {
     QuestionAIEditDialog,
-    QuestionFormatEditDialog
+    QuestionFormatEditDialog,
+    QuestionAIDetailDialog
   },
   data() {
     return {
@@ -302,6 +315,9 @@ export default {
       currentEditAIQuestion: null,
       editJSON:null,
       editJSONindex: null,
+      detailJSON: null,
+      detailIndex: null,
+      showDetailDialog: false,
       currentGeneratingQuestion: {
         type: "",
         difficulty: "",
@@ -424,7 +440,7 @@ export default {
 
 
         if (!response.ok) {
-          this.$emit('info', '请求过于频繁，请稍后再试', 'error');
+          this.$emit('info', '无法连接服务器，请稍后再试', 'error');
           return;
         }
 
@@ -489,12 +505,14 @@ export default {
           this.controller = null;
           }
           const totalTime = Math.round((endTime - startTime) / 1000);
-          console.log(totalTime)
           this.currentGeneratingQuestion.useTime = this.useDeepThinking ? totalTime : 0;
-          this.questions.push({
-            ...this.currentGeneratingQuestion,
-            collapsedDeepThinking: false
-          })
+          if (this.currentGeneratingQuestion.chatResponse !== '') {
+            this.questions.push({
+              ...this.currentGeneratingQuestion,
+              collapsedDeepThinking: false
+            })
+          }
+
           this.isCurrentGenerating = false
           this.scrollToBottom();
       }
@@ -575,6 +593,17 @@ export default {
       this.editJSON = this.questions[index].chatResponse;
       this.showFormatDialog = true;
     },
+    detailFormat(index){
+      this.detailIndex = index;
+      this.detailJSON = {
+        type: this.questions[index].type,
+        difficulty: this.questions[index].difficulty,
+        language: this.questions[index].language,
+        discribe: this.questions[index].discribe,
+        content: this.questions[index].chatResponse,
+      }
+      this.showDetailDialog = true;
+    },
     handleEditJson(newJson) {
       try {
         JSON.parse(newJson);
@@ -582,12 +611,14 @@ export default {
         this.$emit('info', '格式修改成功', 'success');
       } catch (e) {
         this.questions[this.editJSONindex].chatResponse = newJson;
-        this.$emit('info', '已修改，但格式修改失败，请检查', 'warning');
+        this.$emit('info', '已修改，但格式校验失败，请检查', 'warning');
         return;
+      }finally {
+        this.showFormatDialog = false;
+        this.editJSON = null;
+        this.editJSONindex = null;
       }
-      this.showFormatDialog = false;
-      this.editJSON = null;
-      this.editJSONindex = null;
+
     },
     scrollToBottom() {
       this.$nextTick(() => {
@@ -695,37 +726,7 @@ button:disabled {
   height: 20px;
 }
 
-/* 通用 tooltip 样式 */
-[data-tooltip] {
-  position: relative;
-}
 
-[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-  z-index: 1000;
-}
-
-
-
-/* 悬停时显示 */
-[data-tooltip]:hover::after{
-  visibility: visible;
-  opacity: 1;
-}
 
 
 .chat-bubble {
@@ -818,7 +819,7 @@ button:disabled {
 .divider {
   height: 2px;
   margin: 10px 0;
-  background: linear-gradient(to right, transparent, #4aa6ef, transparent);
+  background:  linear-gradient(to right, #5b9df9, #d0e6ff);
   border-radius: 2px;
 }
 
@@ -878,6 +879,19 @@ button:disabled {
   border: none;
   transition: all 0.2s;
 }
+.action-btn:hover {
+  transform: scale(1.05);
+}
+.action-btn:active {
+  transform: scale(1);
+}
+.detail-btn{
+  background-color: #f0dfff;
+  color: black;
+}
+.detail-btn:hover {
+  background-color: #e0bfff;
+}
 .change-btn{
   background-color: #f0f0f0;
   color: #333;
@@ -929,14 +943,15 @@ button:disabled {
 }
 .spinner {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #4aa6ef;
-  border-top: 2px solid transparent;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #007bff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin-left: 6px;
 }
+
 @keyframes spin {
   to {
     transform: rotate(720deg);
