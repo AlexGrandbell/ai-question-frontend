@@ -207,7 +207,7 @@ export default {
         systemPrompt += detailPrompt.difficulty.hard
       }
       if(this.question.language.length>0){
-        systemPrompt += detailPrompt.language.haveLanguage + this.languageTags.join(',')
+        systemPrompt += detailPrompt.language.haveLanguage + this.question.language.join(',')
       }else{
         systemPrompt += detailPrompt.language.noLanguage
       }
